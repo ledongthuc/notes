@@ -1,0 +1,20 @@
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: http-app
+spec: 
+  selector: 
+    matchLabels: 
+      app: http-server
+  template: 
+    metadata: 
+      labels: 
+        app: http-server
+    spec: 
+      containers: 
+        - 
+          args: 
+            - "-text=Hello world"
+          image: "hashicorp/http-echo:latest"
+          name: http-server
