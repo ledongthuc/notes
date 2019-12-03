@@ -1,0 +1,38 @@
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: http-app
+spec: 
+  selector: 
+    matchLabels: 
+      app: http-server
+  template: 
+    metadata: 
+      labels: 
+        app: http-server
+    spec: 
+      containers: 
+        - 
+          args: 
+            - "-text=Hello world"
+          image: "hashicorp/http-echo:latest"
+          name: http-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: authenticate-app
+spec: 
+  selector: 
+    matchLabels: 
+      app: authenticate-app
+  template: 
+    metadata: 
+      labels: 
+        app: authenticate-app
+    spec: 
+      containers: 
+        - 
+          image: "ledongthuc/authenticate-cookie-api:latest"
+          name: authenticate-app

@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: http-app-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx" # ingress will scan it
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /sub-path/
+        backend:
+          serviceName: http-app-service
+          servicePort: 5678
