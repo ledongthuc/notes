@@ -27,7 +27,7 @@ kubectl describe pod [pod-name]
 Events:
   Type     Reason     Age                     From               Message
   ----     ------     ----                    ----               -------
-  Normal   Scheduled  <unknown>               default-scheduler  Successfully assigned default/http-app-96d5866f9-bwzqw to minikube
+  Normal   Scheduled  <unknown>               default-scheduler  Successfully assigned xxx to minikube
   Normal   Pulling    15m (x3 over 19m)       kubelet, minikube  Pulling image "ledongthuc/liveness-probe-api:latest"
   Normal   Killing    15m (x2 over 17m)       kubelet, minikube  Container http-server failed liveness probe, will be restarted
   Normal   Pulled     15m (x3 over 19m)       kubelet, minikube  Successfully pulled image "ledongthuc/liveness-probe-api:latest"
