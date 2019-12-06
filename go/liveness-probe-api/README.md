@@ -2,6 +2,7 @@
 API server supports routes for liveness, readness, startup probes
 
 Docker images at: https://hub.docker.com/repository/docker/ledongthuc/liveness-probe-api
+Source at: https://github.com/ledongthuc/snippet/tree/master/go/liveness-probe-api
 
 ## Quickstart
 
@@ -12,7 +13,7 @@ docker run -p 8080:8080 ledongthuc/liveness-probe-api
 
 Make requests to service 6 times
 ```
-curl -I http://localhost:8080/liveness_probe_status && \
+curl -I http://localhost:8081/liveness_probe_status && \
 curl -I http://localhost:8080/liveness_probe_status && \
 curl -I http://localhost:8080/liveness_probe_status && \
 curl -I http://localhost:8080/liveness_probe_status && \
