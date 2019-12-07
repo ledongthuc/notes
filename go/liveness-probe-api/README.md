@@ -1,7 +1,7 @@
 # liveness-probe-api
 API server supports routes for liveness, readness, startup probes
 
-Docker images at: https://hub.docker.com/repository/docker/ledongthuc/liveness-probe-api
+Docker images at: https://hub.docker.com/r/ledongthuc/liveness-probe-api
 Source at: https://github.com/ledongthuc/snippet/tree/master/go/liveness-probe-api
 
 ## Quickstart
