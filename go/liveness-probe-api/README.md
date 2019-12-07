@@ -11,15 +11,13 @@ Run server with docker
 docker run -p 8080:8080 ledongthuc/liveness-probe-api
 ```
 
-Make requests to service 6 times
+Make requests to service 10 times
 ```
-curl -I http://localhost:8081/liveness_probe_status && \
-curl -I http://localhost:8080/liveness_probe_status && \
-curl -I http://localhost:8080/liveness_probe_status && \
-curl -I http://localhost:8080/liveness_probe_status && \
-curl -I http://localhost:8080/liveness_probe_status && \
-curl -I http://localhost:8080/liveness_probe_status
+for i in {1..10}; do curl -I http://localhost:8080/liveness_probe_status; done;
 ```
+
+6 first requests are sucess, 4 next requests return 500 error
+
 ## Notes
 
 If you want change the number of first successful requests, use environment `NO_SUCCESS`
