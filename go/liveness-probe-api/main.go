@@ -12,14 +12,16 @@ import (
 var counter = int64(0)
 
 func main() {
-	maxSuccess := int64(5)
-	if c, err := strconv.ParseInt(os.Getenv("NO_SUCCESS"), 10, 64); err != nil {
-		counter = c
+	fmt.Println("Env NUMBER_OF_SUCCESS: ", os.Getenv("NUMBER_OF_SUCCESS"))
+
+	numberOfSuccess := int64(5)
+	if c, err := strconv.ParseInt(os.Getenv("NUMBER_OF_SUCCESS"), 10, 64); err == nil {
+		numberOfSuccess = c
 	}
 
 	http.HandleFunc("/liveness_probe_status", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("/liveness_probe_status, Counter: ", counter)
-		if counter >= maxSuccess {
+		if counter >= numberOfSuccess {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -29,7 +31,7 @@ func main() {
 
 	http.HandleFunc("/liveness_probe_timeout", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("/liveness_probe_timeout, Counter: ", counter)
-		if counter > 5 {
+		if counter >= numberOfSuccess {
 			time.Sleep(1 * time.Hour)
 			return
 		}

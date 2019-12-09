@@ -16,11 +16,14 @@ spec:
         - 
           image: "ledongthuc/liveness-probe-api:latest"
           name: http-server
+          env:
+          - name: NUMBER_OF_SUCCESS
+            value: "2"
           livenessProbe:
             httpGet:
               path: /liveness_probe_status
               port: 8080
-            initialDelaySeconds: 15
-            timeoutSeconds: 20 # acceptable time to waiting response of a request
-            periodSeconds: 10 # send requests every 10 seconds
-            failureThreshold: 5 # accept to fail 5 times
+            initialDelaySeconds: 5
+            timeoutSeconds: 10
+            periodSeconds: 5
+            failureThreshold: 2
