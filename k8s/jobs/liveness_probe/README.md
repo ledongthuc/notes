@@ -15,10 +15,8 @@ kubectl apply  -f./
 2. Watch pod status
 
 ```
-kubectl get pod --watch
-```
+$ kubectl get pod --watch
 
-```
 http-app-xxx   0/1     ContainerCreating   0          5s
 http-app-xxx   1/1     Running             0          5s
 http-app-xxx   1/1     Running             1          30s
@@ -29,11 +27,10 @@ http-app-xxx   0/1     CrashLoopBackOff    4          2m7s
 ```
 
 3. To check detail, use describe
-```
-kubectl describe pod [pod-name]
-```
 
 ```
+$ kubectl describe pod [pod-name]
+... 
 Events:
   Type     Reason     Age                     From               Message
   ----     ------     ----                    ----               -------
@@ -46,3 +43,21 @@ Events:
   Warning  Unhealthy  8m57s (x26 over 18m)    kubelet, minikube  Liveness probe failed: HTTP probe failed with statuscode: 500
   Warning  BackOff    4m10s (x13 over 6m27s)  kubelet, minikube  Back-off restarting failed container
 ```
+
+4. Check application logs:
+
+```
+$ kubectl logs http-app-688d49fc67-p5fp7
+
+Env NUMBER_OF_LIVENESS_SUCCESS:  2
+Env NUMBER_OF_SKIP_STARTUP:
+Start with port 8080
+/liveness_probe_status, Counter:  0
+/liveness_probe_status, Counter:  1
+/liveness_probe_status, Counter:  2
+/liveness_probe_status, Counter:  3
+/liveness_probe_status, Counter:  4
+/liveness_probe_status, Counter:  5
+/liveness_probe_status, Error result
+/liveness_probe_status, Counter:  5
+/liveness_probe_status, Error result

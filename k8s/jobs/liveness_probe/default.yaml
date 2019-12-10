@@ -17,7 +17,7 @@ spec:
           image: "ledongthuc/liveness-probe-api:latest"
           name: http-server
           env:
-          - name: NUMBER_OF_SUCCESS
+          - name: NUMBER_OF_LIVENESS_SUCCESS
             value: "2"
           livenessProbe:
             httpGet:
