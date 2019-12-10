@@ -47,7 +47,7 @@ Events:
 4. Check application logs:
 
 ```
-$ kubectl logs http-app-688d49fc67-p5fp7
+$ kubectl logs http-app-xxx
 
 Env NUMBER_OF_LIVENESS_SUCCESS:  2
 Env NUMBER_OF_SKIP_STARTUP:
