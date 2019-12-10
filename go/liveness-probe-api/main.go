@@ -17,7 +17,7 @@ func main() {
 	fmt.Println("Env NUMBER_OF_SKIP_STARTUP: ", os.Getenv("NUMBER_OF_SKIP_STARTUP"))
 
 	numberOfStartupSkip := int64(3)
-	if c, err := strconv.ParseInt(os.Getenv("NUMBER_OF_SUCCESS"), 10, 64); err == nil {
+	if c, err := strconv.ParseInt(os.Getenv("NUMBER_OF_LIVENESS_SUCCESS"), 10, 64); err == nil {
 		numberOfStartupSkip = c
 	}
 
@@ -33,7 +33,7 @@ func main() {
 	})
 
 	numberOfSuccess := int64(5)
-	if c, err := strconv.ParseInt(os.Getenv("NUMBER_OF_SUCCESS"), 10, 64); err == nil {
+	if c, err := strconv.ParseInt(os.Getenv("NUMBER_OF_LIVENESS_SUCCESS"), 10, 64); err == nil {
 		numberOfSuccess = c
 	}
 
