@@ -32,5 +32,31 @@ Want to run/build with Golang, check Makefile
 make build
 make run
 ```
+## APIs
 
-Feel free to PR
+`/liveness_probe_status`
+
+Will return status 200 until counter > `NUMBER_OF_SUCCESS`. Otherwise, return status 500
+
+`/liveness_probe_timeout`
+
+Will return status 200 until counter > `NUMBER_OF_SUCCESS`. Otherwise, timeout
+
+`/readness_probe_status`
+
+Will return status 200 until counter > `NUMBER_OF_READNESS_FAIL`. Otherwise, return status 200 
+
+`/readness_probe_timeout`
+
+Will be timeout until counter > `NUMBER_OF_READNESS_FAIL`. Otherwise, return status 200 
+
+`/startup_probe_status`
+
+Will return status 200 until counter > `NUMBER_OF_STARTUP_FAIL`. Otherwise, return status 200 
+
+`/startup_probe_timeout`
+
+Will be timeout until counter > `NUMBER_OF_STARTUP_FAIL`. Otherwise, return status 200 
+
+## Feel free to PR
+
