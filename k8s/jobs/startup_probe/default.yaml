@@ -29,9 +29,11 @@ spec:
             timeoutSeconds: 10
             periodSeconds: 5
             failureThreshold: 2
-          startupProbe:
-            httpGet:
-              path: /liveness_probe_startup_checking
-              port: 8080
-            periodSeconds: 5
-            failureThreshold: 10
+          # https://github.com/kubernetes/enhancements/issues/950
+          # startup probe is not merged yet. Added later
+          # startupProbe:
+          #   httpGet:
+          #     path: /liveness_probe_startup_checking
+          #     port: 8080
+          #   periodSeconds: 5
+          #   failureThreshold: 10
