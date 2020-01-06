@@ -1,0 +1,37 @@
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: http-app
+spec: 
+  selector: 
+    matchLabels: 
+      app: http-server
+  template: 
+    metadata: 
+      labels: 
+        app: http-server
+    spec: 
+      containers: 
+        - 
+          image: "ledongthuc/liveness-probe-api:latest"
+          name: http-server
+          env:
+          - name: NUMBER_OF_SUCCESS
+            value: "5"
+          - name: NUMBER_OF_READNESS_FAIL
+            value: "5"
+          livenessProbe:
+            httpGet:
+              path: /liveness_probe_status
+              port: 8080
+            initialDelaySeconds: 5
+            timeoutSeconds: 10
+            periodSeconds: 5
+            failureThreshold: 2
+          readinessProbe:
+            httpGet:
+              path: /readness_probe_status
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 10
