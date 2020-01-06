@@ -9,53 +9,87 @@ import (
 	"time"
 )
 
+var counter = int64(0)
+
 func main() {
-	var counterLivenessSuccess = int64(0)
-	var counterStartupSkip = int64(0)
-
-	fmt.Println("Env NUMBER_OF_LIVENESS_SUCCESS: ", os.Getenv("NUMBER_OF_LIVENESS_SUCCESS"))
-	fmt.Println("Env NUMBER_OF_SKIP_STARTUP: ", os.Getenv("NUMBER_OF_SKIP_STARTUP"))
-
-	numberOfStartupSkip := int64(3)
-	if c, err := strconv.ParseInt(os.Getenv("NUMBER_OF_LIVENESS_SUCCESS"), 10, 64); err == nil {
-		numberOfStartupSkip = c
-	}
-
-	http.HandleFunc("/liveness_probe_startup_checking", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("/liveness_probe_startup_checking, Counter: ", counterStartupSkip)
-		if counterStartupSkip >= numberOfStartupSkip {
-			fmt.Println("/liveness_probe_startup_checking, Ready")
-			w.WriteHeader(http.StatusOK)
-			return
-		}
-
-		w.WriteHeader(http.StatusInternalServerError)
-	})
-
 	numberOfSuccess := int64(5)
-	if c, err := strconv.ParseInt(os.Getenv("NUMBER_OF_LIVENESS_SUCCESS"), 10, 64); err == nil {
+	if c, err := strconv.ParseInt(os.Getenv("NUMBER_OF_SUCCESS"), 10, 64); err != nil {
 		numberOfSuccess = c
 	}
 
+	numberOfReadnessFail := int64(5)
+	if c, err := strconv.ParseInt(os.Getenv("NUMBER_OF_READNESS_FAIL"), 10, 64); err != nil {
+		numberOfReadnessFail = c
+	}
+
+	numberOfStartupFail := int64(5)
+	if c, err := strconv.ParseInt(os.Getenv("NUMBER_OF_STARTUP_FAIL"), 10, 64); err != nil {
+		numberOfStartupFail = c
+	}
+
 	http.HandleFunc("/liveness_probe_status", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("/liveness_probe_status, Counter: ", counterLivenessSuccess)
-		if counterLivenessSuccess >= numberOfSuccess {
-			fmt.Println("/liveness_probe_status, Error result")
+		if counter >= numberOfSuccess {
+			fmt.Println("/liveness_probe_status, Counter: ", counter, ", Status: 500")
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		counterLivenessSuccess++
+		counter++
+		fmt.Println("/liveness_probe_status, Counter: ", counter, ", Status: 200")
 		w.WriteHeader(http.StatusOK)
 	})
 
 	http.HandleFunc("/liveness_probe_timeout", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("/liveness_probe_timeout, Counter: ", counterLivenessSuccess)
-		if counterLivenessSuccess >= numberOfSuccess {
-			fmt.Println("/liveness_probe_timeout, Timeout")
+		if counter >= numberOfSuccess {
+			fmt.Println("/liveness_probe_timeout, Counter: ", counter, ", Timeout: 1h")
 			time.Sleep(1 * time.Hour)
 			return
 		}
-		counterLivenessSuccess++
+		counter++
+		fmt.Println("/liveness_probe_timeout, Counter: ", counter, ", Status: Success")
+		w.WriteHeader(http.StatusOK)
+	})
+
+	http.HandleFunc("/readness_probe_status", func(w http.ResponseWriter, r *http.Request) {
+		if counter >= numberOfReadnessFail {
+			fmt.Println("/readness_probe_status, Counter: ", counter, ", Status: 500")
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		counter++
+		fmt.Println("/readness_probe_status, Counter: ", counter, ", Status: 200")
+		w.WriteHeader(http.StatusOK)
+	})
+
+	http.HandleFunc("/readness_probe_timeout", func(w http.ResponseWriter, r *http.Request) {
+		if counter >= numberOfReadnessFail {
+			fmt.Println("/readness_probe_timeout, Counter: ", counter, ", Timeout: 1h")
+			time.Sleep(1 * time.Hour)
+			return
+		}
+		counter++
+		fmt.Println("/readness_probe_timeout, Counter: ", counter, ", Status: 200")
+		w.WriteHeader(http.StatusOK)
+	})
+
+	http.HandleFunc("/startup_probe_status", func(w http.ResponseWriter, r *http.Request) {
+		if counter >= numberOfStartupFail {
+			fmt.Println("/startup_probe_status, Counter: ", counter, ", Status: 500")
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		counter++
+		fmt.Println("/startup_probe_status, Counter: ", counter, ", Status: 200")
+		w.WriteHeader(http.StatusOK)
+	})
+
+	http.HandleFunc("/startup_probe_timeout", func(w http.ResponseWriter, r *http.Request) {
+		if counter >= numberOfStartupFail {
+			fmt.Println("/startup_probe_timeout, Counter: ", counter, ", Timeout: 1h")
+			time.Sleep(1 * time.Hour)
+			return
+		}
+		counter++
+		fmt.Println("/startup_probe_timeout, Counter: ", counter, ", Status: 200")
 		w.WriteHeader(http.StatusOK)
 	})
 
