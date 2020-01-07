@@ -20,7 +20,7 @@ func main() {
 	}
 
 	numberOfReadinessFail := int64(5)
-	if c, err := strconv.ParseInt(os.Getenv("NUMBER_OF_READNESS_FAIL"), 10, 64); err != nil {
+	if c, err := strconv.ParseInt(os.Getenv("NUMBER_OF_READINESS_FAIL"), 10, 64); err != nil {
 		numberOfReadinessFail = c
 	}
 

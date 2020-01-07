@@ -1,5 +1,5 @@
 # liveness-probe-api
-API server supports routes for liveness, readness, startup probes
+API server supports routes for liveness, readiness, startup probes
 
 Docker images at: https://hub.docker.com/r/ledongthuc/liveness-probe-api
 Source at: https://github.com/ledongthuc/snippet/tree/master/go/liveness-probe-api
@@ -42,13 +42,13 @@ Will return status 200 until counter > `NUMBER_OF_SUCCESS`. Otherwise, return st
 
 Will return status 200 until counter > `NUMBER_OF_SUCCESS`. Otherwise, timeout
 
-`/readness_probe_status`
+`/readiness_probe_status`
 
-Will return status 200 until counter > `NUMBER_OF_READNESS_FAIL`. Otherwise, return status 200 
+Will return status 200 until counter > `NUMBER_OF_READINESS_FAIL`. Otherwise, return status 200 
 
-`/readness_probe_timeout`
+`/readiness_probe_timeout`
 
-Will be timeout until counter > `NUMBER_OF_READNESS_FAIL`. Otherwise, return status 200 
+Will be timeout until counter > `NUMBER_OF_READINESS_FAIL`. Otherwise, return status 200 
 
 `/startup_probe_status`
 
