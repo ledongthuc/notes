@@ -10,7 +10,7 @@ import (
 )
 
 var counterLiveness = int64(0)
-var counterReadness = int64(0)
+var counterReadiness = int64(0)
 var counterStartup = int64(0)
 
 func main() {
@@ -19,9 +19,9 @@ func main() {
 		numberOfSuccess = c
 	}
 
-	numberOfReadnessFail := int64(5)
+	numberOfReadinessFail := int64(5)
 	if c, err := strconv.ParseInt(os.Getenv("NUMBER_OF_READNESS_FAIL"), 10, 64); err != nil {
-		numberOfReadnessFail = c
+		numberOfReadinessFail = c
 	}
 
 	numberOfStartupFail := int64(5)
@@ -51,25 +51,25 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 	})
 
-	http.HandleFunc("/readness_probe_status", func(w http.ResponseWriter, r *http.Request) {
-		if counterReadness < numberOfReadnessFail {
-			fmt.Println("/readness_probe_status, Counter: ", counterReadness, ", Status: 500")
+	http.HandleFunc("/readiness_probe_status", func(w http.ResponseWriter, r *http.Request) {
+		if counterReadiness < numberOfReadinessFail {
+			fmt.Println("/readiness_probe_status, Counter: ", counterReadiness, ", Status: 500")
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		counterReadness++
-		fmt.Println("/readness_probe_status, Counter: ", counterReadness, ", Status: 200")
+		counterReadiness++
+		fmt.Println("/readiness_probe_status, Counter: ", counterReadiness, ", Status: 200")
 		w.WriteHeader(http.StatusOK)
 	})
 
-	http.HandleFunc("/readness_probe_timeout", func(w http.ResponseWriter, r *http.Request) {
-		if counterReadness < numberOfReadnessFail {
-			fmt.Println("/readness_probe_timeout, Counter: ", counterReadness, ", Timeout: 1h")
+	http.HandleFunc("/readiness_probe_timeout", func(w http.ResponseWriter, r *http.Request) {
+		if counterReadiness < numberOfReadinessFail {
+			fmt.Println("/readiness_probe_timeout, Counter: ", counterReadiness, ", Timeout: 1h")
 			time.Sleep(1 * time.Hour)
 			return
 		}
-		counterReadness++
-		fmt.Println("/readness_probe_timeout, Counter: ", counterReadness, ", Status: 200")
+		counterReadiness++
+		fmt.Println("/readiness_probe_timeout, Counter: ", counterReadiness, ", Status: 200")
 		w.WriteHeader(http.StatusOK)
 	})
 

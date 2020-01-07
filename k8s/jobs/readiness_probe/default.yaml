@@ -17,21 +17,11 @@ spec:
           image: "ledongthuc/liveness-probe-api:latest"
           name: http-server
           env:
-          - name: NUMBER_OF_SUCCESS
-            value: "5"
           - name: NUMBER_OF_READNESS_FAIL
             value: "5"
-          livenessProbe:
-            httpGet:
-              path: /liveness_probe_status
-              port: 8080
-            initialDelaySeconds: 5
-            timeoutSeconds: 10
-            periodSeconds: 5
-            failureThreshold: 2
           readinessProbe:
             httpGet:
-              path: /readness_probe_status
+              path: /readiness_probe_status
               port: 8080
-            periodSeconds: 5
-            failureThreshold: 10
+            periodSeconds: 10
+            failureThreshold: 2
