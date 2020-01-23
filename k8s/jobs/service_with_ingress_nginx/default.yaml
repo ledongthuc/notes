@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata: 
-  name: http-app
+  name: http-app-service-with-ingress-nginx
 spec: 
   selector: 
     matchLabels: 
