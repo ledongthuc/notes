@@ -8,6 +8,13 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/mast
 
 https://kubernetes.github.io/ingress-nginx/deploy/
 
+1.1 Enable ingress
+
+Minikube
+```
+minikube addons enable ingress
+```
+
 2. Verify installation
 
 ```
