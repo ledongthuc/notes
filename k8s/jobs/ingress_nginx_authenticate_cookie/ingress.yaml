@@ -1,0 +1,32 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: http-app-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx" # ingress will scan it
+    nginx.ingress.kubernetes.io/auth-url: "http://192.168.99.101/authenticate"
+    nginx.ingress.kubernetes.io/auth-signin: "http://192.168.99.101/login"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /docs/
+        backend:
+          serviceName: http-app-service
+          servicePort: 5678
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: authenciate-app-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx" # ingress will scan it
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: authenticate-app-service
+          servicePort: 8080

@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata: 
-  name: http-app
+  name: ingress-nginx-logic-api
 spec: 
   selector: 
     matchLabels: 
@@ -22,7 +22,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata: 
-  name: authenticate-app
+  name: ingress-nginx-authenticate-cookie-api
 spec: 
   selector: 
     matchLabels: 
