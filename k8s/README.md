@@ -2,11 +2,11 @@
  - [Minikube](setup/minikube.md)
 
 # Common jobs
- - [Simple http server](setup/simple_http_server/)
+ - [Simple http server](job/simple_http_server/)
  - Health check
-   - [Liveness probe](setup/liveness_probe/)
-   - [Readiness probe](setup/readiness_probe/)
-   - [Startup probe (waiting stable version)](setup/startup_probe/)
+   - [Liveness probe](jobs/liveness_probe/)
+   - [Readiness probe](jobs/readiness_probe/)
+   - [Startup probe (waiting stable version)](jobs/startup_probe/)
  - Ingress (nginx)
-   - [Simple http server](setup/ingress_nginx/)
-   - [Custom authentication](setup/ingress_nginx/)
+   - [Simple http server](jobs/ingress_nginx/)
+   - [Custom authentication](jobs/ingress_nginx/)
