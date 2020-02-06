@@ -2,7 +2,7 @@
  - [Minikube](setup/minikube.md)
 
 # Common jobs
- - [Simple http server](job/simple_http_server/)
+ - [Simple http server](jobs/simple_http_server/)
  - Health check
    - [Liveness probe](jobs/liveness_probe/)
    - [Readiness probe](jobs/readiness_probe/)
