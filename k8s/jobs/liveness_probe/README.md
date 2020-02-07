@@ -6,6 +6,8 @@ We use a testing service `ledongthuc/liveness-probe-api` to simulate the case li
  - Request counter will be reset after restarting pod
  - After 5 times restarting, we will got error CrashLoopBackOff
 
+Docker Image: https://hub.docker.com/r/ledongthuc/liveness-probe-api
+
 1. Apply deployment and service
 
 ```
