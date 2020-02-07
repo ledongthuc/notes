@@ -20,6 +20,8 @@ kubectl apply -f ./
 
 4. Check exposed ip of ingress
 
+notes: will take litle time to assign IP address
+
 ```
 kubectl get ingress http-app-ingress
 ```
