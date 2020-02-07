@@ -1,6 +1,6 @@
-# Liveness probe
+# Readiness probe
 
-We use a testing service `ledongthuc/liveness-probe-api` to simulate the case readiness isn't ready to serve request of service.
+We use a testing docker image `ledongthuc/liveness-probe-api` to simulate the case readiness isn't ready to serve request of service.
  - 1st -> 5th requests to `/readiness_probe_status`, they return status code 500, requests to service will be failed. So the pod's network isn't list to service
  - from 5th request, `/readiness_probe_status` returns status code 200, requests to service will be success and its network is attached, we can reach to this pod
  
