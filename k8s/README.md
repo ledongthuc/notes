@@ -1,5 +1,6 @@
 # Setup
  - [Minikube](setup/minikube.md)
+   - [Export URL](setup/get_k8s_url.md)
 
 # Common jobs
  - [Simple http server](jobs/simple_http_server/)
