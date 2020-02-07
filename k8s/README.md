@@ -1,6 +1,6 @@
 # Setup
  - Minikube
-   - [Install minikube](setup/minikube/install.md)
+   - [Install minikube](setup/minikube/install_k8s.md)
    - [Install ingress](setup/minikube/install_ingress.md)
 
 # Common jobs
