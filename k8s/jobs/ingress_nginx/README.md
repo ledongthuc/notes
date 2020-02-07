@@ -2,18 +2,7 @@
 
 1. Install ingress nginx controller
 
-```
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
-```
-
-https://kubernetes.github.io/ingress-nginx/deploy/
-
-1.1 Enable ingress
-
-Minikube
-```
-minikube addons enable ingress
-```
+[Install ingress](/k8s/setup/minikube/install_ingress.md)
 
 2. Verify installation
 
@@ -26,7 +15,7 @@ kubectl get pods --all-namespaces -l app.kubernetes.io/name=ingress-nginx
 note: assume you are at root of repository
 
 ```
-kubectl apply -f ./k8s/jobs/service_with_ingress_nginx
+kubectl apply -f ./
 ```
 
 4. Check exposed ip of ingress
