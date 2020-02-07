@@ -4,16 +4,31 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 )
 
 const (
 	CookieAuthenticate = "AUTHENTICATED"
+	EnvUsername        = "USERNAME"
+	EnvPassword        = "PASSWORD"
 )
 
 func main() {
+	username := "username"
+	if os.Getenv(EnvUsername) != "" {
+		username = os.Getenv(EnvUsername)
+	}
+	password := "password"
+	if os.Getenv(EnvPassword) != "" {
+		password = os.Getenv(EnvPassword)
+	}
+	fmt.Printf("%s: %s\n%s: %s\n", EnvUsername, username, EnvPassword, password)
+
 	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
-		user := r.URL.Query()["user"]
-		if len(user) == 0 || user[0] != "password" {
+		usernameP := r.URL.Query()["username"]
+		passwordP := r.URL.Query()["password"]
+		if len(usernameP) == 0 || usernameP[0] != username ||
+			len(passwordP) == 0 || passwordP[0] != password {
 			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("Login fail"))
 			return
