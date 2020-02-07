@@ -1,21 +1,36 @@
 # Simple http server
 
+WORKDIR: current folder
+service_name: http-app-service
+
 1. Apply deployment and service
 
 ```
 kubectl apply ./
 ```
 
-2. Expose the deployment to outside
+2. Get URL
 
-It's based on K8S environment. If we use minikube, please use:
+Check how to get URL of service `http-app-service`: [Get k8s service URL](/k8s/setup/get_k8s_url.md)
+Example output:
 
 ```
-minikube service http-app-service
+|----------------------|---------------------------|-----------------------------|-----|
+|      NAMESPACE       |           NAME            |         TARGET PORT         | URL |
+|----------------------|---------------------------|-----------------------------|-----|
+| default              | http-app-service          | http://192.168.99.101:31055 |
+|----------------------|---------------------------|-----------------------------|-----|
+
 ```
 
-3. Browse the cluster with exposed service IP
+3. Test url
 
+Request:
+```
+curl http://192.168.99.101:31055
+```
+
+Response:
 ```
 Hello world
 ```
