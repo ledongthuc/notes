@@ -11,7 +11,10 @@ kubectl apply ./
 
 2. Get URL
 
-Check how to get URL of service `http-app-service`: [Get k8s service URL](/k8s/setup/get_k8s_url.md)
+Check exposed URL `http-app-service`
+
+check again install notes of K8s: [Get k8s service URL](/k8s/setup/)
+
 Example output:
 
 ```
