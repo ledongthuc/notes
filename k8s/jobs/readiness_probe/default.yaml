@@ -17,7 +17,7 @@ spec:
           image: "ledongthuc/liveness-probe-api:latest"
           name: http-server
           env:
-          - name: NUMBER_OF_READNESS_FAIL
+          - name: NUMBER_OF_READINESS_FAIL
             value: "5"
           readinessProbe:
             httpGet:
