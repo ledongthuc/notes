@@ -7,7 +7,7 @@ DOCKER_USERNAME=ledongthuc
 DOCKER_IMG_NAME=$(BINARY_NAME)
 DOCKER_VERSION=latest
 
-all: test build
+all: build
 build: 
 	$(GOBUILD) -o $(BINARY_NAME) -v
 run:
