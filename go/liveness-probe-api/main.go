@@ -15,18 +15,24 @@ var counterStartup = int64(0)
 
 func main() {
 	numberOfSuccess := int64(5)
-	if c, err := strconv.ParseInt(os.Getenv("NUMBER_OF_SUCCESS"), 10, 64); err != nil {
-		numberOfSuccess = c
+	if os.Getenv("NUMBER_OF_SUCCESS") != "" {
+		if c, err := strconv.ParseInt(os.Getenv("NUMBER_OF_SUCCESS"), 10, 64); err != nil {
+			numberOfSuccess = c
+		}
 	}
 
 	numberOfReadinessFail := int64(5)
-	if c, err := strconv.ParseInt(os.Getenv("NUMBER_OF_READINESS_FAIL"), 10, 64); err != nil {
-		numberOfReadinessFail = c
+	if os.Getenv("NUMBER_OF_READINESS_FAIL") != "" {
+		if c, err := strconv.ParseInt(os.Getenv("NUMBER_OF_READINESS_FAIL"), 10, 64); err != nil {
+			numberOfReadinessFail = c
+		}
 	}
 
 	numberOfStartupFail := int64(5)
-	if c, err := strconv.ParseInt(os.Getenv("NUMBER_OF_STARTUP_FAIL"), 10, 64); err != nil {
-		numberOfStartupFail = c
+	if os.Getenv("NUMBER_OF_STARTUP_FAIL") != "" {
+		if c, err := strconv.ParseInt(os.Getenv("NUMBER_OF_STARTUP_FAIL"), 10, 64); err != nil {
+			numberOfStartupFail = c
+		}
 	}
 
 	fmt.Println("NUMBER_OF_SUCCESS: ", numberOfSuccess)
