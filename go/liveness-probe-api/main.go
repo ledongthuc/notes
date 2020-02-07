@@ -29,6 +29,10 @@ func main() {
 		numberOfStartupFail = c
 	}
 
+	fmt.Println("NUMBER_OF_SUCCESS: ", numberOfSuccess)
+	fmt.Println("NUMBER_OF_READINESS_FAIL: ", numberOfReadinessFail)
+	fmt.Println("NUMBER_OF_STARTUP_FAIL: ", numberOfStartupFail)
+
 	http.HandleFunc("/liveness_probe_status", func(w http.ResponseWriter, r *http.Request) {
 		defer func() { counterLiveness++ }()
 		if counterLiveness >= numberOfSuccess {
