@@ -12,7 +12,7 @@ ParentFunction()
 ```
 
 
-## Embedded and embededing interafaces have same func
+## Embedded and embedding interafaces have same func
 
 ```
 go run same_func.go
