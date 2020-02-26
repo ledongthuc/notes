@@ -43,7 +43,7 @@ Output:
 ./same_func2.go:37:3: ambiguous selector c.Action
 ```
 
-## Diamond
+## Diamond embedding
 
 ```
 go run diamond.go
@@ -53,4 +53,40 @@ Output:
 
 ```
 ./diamond.go:5:6: invalid recursive type d1
+```
+
+## Tree cycle embedding
+
+```
+                           ┌───────┐                
+                           │       │                
+                           │       │                
+┌────────┐            ┌────────┐   │                
+│   d4   │            │   d5   │   │                
+└────────┘            └────────┘   │                
+     ▲                     ▲       │                
+     └──────────┬──────────┘       │        ───────┐
+                │                  │   ┌────────┐  │
+                │                  │   │   d6   │  │
+           ┌────────┐              │   └────────┘  │
+           │   d3   │              │        ▲      │
+           └────────┘              │        │      │
+                ▲            ┌─────┴────────┘      │
+     ┌──────────┴────────────┤                     │
+     │                       │                     │
+┌────────┐              ┌────────┐                 │
+│   d1   │              │   d2   │                 │
+└────────┘              └────────┘                 │
+     ▲                                             │
+     └─────────────────────────────────────────────┘
+```
+
+```
+go run tree_cycle_embedding.go
+```
+
+Output:
+
+```
+./tree_cycle_embedding.go:5:6: invalid recursive type d1
 ```
