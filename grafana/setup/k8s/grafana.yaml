@@ -1,0 +1,38 @@
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: grafana-app
+spec: 
+  selector: 
+    matchLabels: 
+      app: grafana-app
+  template: 
+    metadata: 
+      labels: 
+        app: grafana-app
+    spec: 
+      volumes:
+      - name: grafana-storage
+        hostPath:
+          path: /tmp/k8s/grafana
+          type: Directory
+      containers: 
+      - image: "grafana/grafana:latest"
+        name: grafana-app
+        imagePullPolicy: Always
+        volumeMounts:
+        - mountPath: /var/lib/grafana
+          name: grafana-storage
+--- 
+apiVersion: v1
+kind: Service
+metadata: 
+  name: grafana-service
+spec: 
+  type: NodePort
+  ports: 
+    - port: 3000
+      targetPort: 3000
+  selector: 
+    app: grafana-app
