@@ -10,7 +10,10 @@ import (
 
 func main() {
 	e := echo.New()
-	for _, route := range getPaths() {
+	customRoutes := getRoutes()
+
+	for index := range customRoutes {
+		route := customRoutes[index]
 		e.GET(route.path, func(c echo.Context) error {
 			return c.String(http.StatusOK, route.message)
 		})
@@ -30,7 +33,7 @@ type routes []route
 
 const EnvName = "CUSTOM_ROUTES"
 
-func getPaths() routes {
+func getRoutes() routes {
 	env := os.Getenv(EnvName)
 	if len(env) == 0 {
 		return routes{}
