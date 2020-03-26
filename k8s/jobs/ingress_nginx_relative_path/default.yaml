@@ -1,0 +1,42 @@
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: ingress-nginx-relative-path-app1
+spec: 
+  selector: 
+    matchLabels: 
+      app: ingress-nginx-relative-path-app1
+  template: 
+    metadata: 
+      labels: 
+        app: ingress-nginx-relative-path-app1
+    spec: 
+      containers: 
+        - 
+          env:
+          - name: CUSTOM_ROUTES
+            value: "/css/style.css:this is css;/random.8b3ec8ff2ac96774ff4e6965e9bba307.html:this is random;/:this is index file of app1"
+          image: "ledongthuc/hello-api:latest"
+          name: ingress-nginx-relative-path-app1
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: ingress-nginx-relative-path-app2
+spec: 
+  selector: 
+    matchLabels: 
+      app: ingress-nginx-relative-path-app2
+  template: 
+    metadata: 
+      labels: 
+        app: ingress-nginx-relative-path-app2
+    spec: 
+      containers: 
+        - 
+          env:
+          - name: CUSTOM_ROUTES
+            value: "/api/xyz:this is api;/this is index file of app2"
+          image: "ledongthuc/hello-api:latest"
+          name: ingress-nginx-relative-path-app2

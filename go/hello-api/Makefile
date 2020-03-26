@@ -6,7 +6,7 @@ BINARY_NAME=hello-api
 DOCKER_USERNAME=ledongthuc
 DOCKER_IMG_NAME=$(BINARY_NAME)
 DOCKER_VERSION=local
-CUSTOM_ROUTES=/custom_url:this is custom;/random.8b3ec8ff2ac96774ff4e6965e9bba307.html:this is random
+CUSTOM_ROUTES=/:custom root;/custom_url:this is custom;/random.8b3ec8ff2ac96774ff4e6965e9bba307.html:this is random
 
 all: test build
 test:
@@ -19,3 +19,6 @@ docker-build:
 	docker build -t $(DOCKER_USERNAME)/$(DOCKER_IMG_NAME):$(DOCKER_VERSION) .
 docker-run:
 	docker run -p 8080:8080 $(DOCKER_USERNAME)/$(BINARY_NAME):$(DOCKER_VERSION) env CUSTOM_ROUTES="$(CUSTOM_ROUTES)" ./app
+docker-push: docker-build
+	docker image tag $(DOCKER_USERNAME)/$(BINARY_NAME):$(DOCKER_VERSION) $(DOCKER_USERNAME)/$(BINARY_NAME):latest;
+	docker image push $(DOCKER_USERNAME)/$(BINARY_NAME):latest

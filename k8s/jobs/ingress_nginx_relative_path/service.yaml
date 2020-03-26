@@ -1,0 +1,20 @@
+--- 
+apiVersion: v1
+kind: Service
+metadata: 
+  name: ingress-nginx-relative-path-app1
+spec: 
+  ports: 
+    - port: 8080
+  selector: 
+    app: ingress-nginx-relative-path-app1
+--- 
+apiVersion: v1
+kind: Service
+metadata: 
+  name: ingress-nginx-relative-path-app2
+spec: 
+  ports: 
+    - port: 8080
+  selector: 
+    app: ingress-nginx-relative-path-app2
