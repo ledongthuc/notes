@@ -1,6 +1,6 @@
 {
 	"comment": "",
-	"ignore": "test",
+	"ignore": "github.com/ledongthuc/notes/go/go-module/govendor2gomodule",
 	"package": [
 		{
 			"checksumSHA1": "ybE4kAPmNPV/dvShuG86AmLbhdE=",
@@ -43,12 +43,7 @@
 			"path": "rsc.io/sampler",
 			"revision": "732a3c400797d8835f2af34a9561f155bef85435",
 			"revisionTime": "2018-02-13T18:15:36Z"
-		},
-		{
-			"checksumSHA1": "kYp7nPtWrodxlovNmt+/KdM1j20=",
-			"path": "temp",
-			"revision": ""
 		}
 	],
-	"rootPath": "temp"
+	"rootPath": "github.com/ledongthuc/notes/go/go-module/govendor2gomodule"
 }
