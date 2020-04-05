@@ -5,6 +5,7 @@ Go module support to convert from Govendor with init command:
 ## Convert
 ```
 go mod init github.com/ledongthuc/notes/go/go-module/govendor2gomodule;
+go mod tidy;
 rm vendor;
 ```
 Result:
@@ -16,9 +17,9 @@ module github.com/ledongthuc/notes/go/go-module/govendor2gomodule
 go 1.14
 
 require (
-	golang.org/x/text v0.3.3-0.20200306154105-06d492aade88
+	golang.org/x/text v0.3.3-0.20200306154105-06d492aade88 // indirect
 	rsc.io/quote v1.5.3-0.20180710144737-5d9f230bcfba
-	rsc.io/sampler v1.99.99
+	rsc.io/sampler v1.99.99 // indirect
 )
 ```
 
