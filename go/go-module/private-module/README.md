@@ -1,10 +1,33 @@
-# local module
+# private module 
 
-Update local path in `go.mod`. Make sure it maps to a local source code 
+Go module support private repo.
 
-Run command:
+## Define private repo
+
+```
+go env -w GOPRIVATE=github.com/liminaab/captron_go_lib;
+```
+
+It ingore the public checksum from public proxy of Go
+
+
+## Update required access permission of git with your repo
+
+Get/create access tokens from https://github.com/settings/tokens
+
+and update it to:
+
+```
+cat ~/.gitconfig
+
+
+# This is Git's per-user configuration file.
+[url "https://{repo_owner}:{access_token}@github.com/repo_name/"]
+        insteadOf = https://github.com/repo_name/
+```
+
+## And run it
+
 ```
 go run main.go
 ```
-
-Go command will auto map with local source code
