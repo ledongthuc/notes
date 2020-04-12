@@ -4,7 +4,7 @@ Go module support to convert from Govendor with init command:
 
 ## Convert
 ```
-go mod init github.com/ledongthuc/notes/go/go-module/govendor2gomodule;
+go mod init github.com/ledongthuc/notes/go/go-module/convert-vendor-to-gomodule;
 go mod tidy;
 rm vendor;
 ```
@@ -12,7 +12,7 @@ Result:
 
 go.mod
 ```
-module github.com/ledongthuc/notes/go/go-module/govendor2gomodule
+module github.com/ledongthuc/notes/go/go-module/convert-vendor-to-gomodule
 
 go 1.14
 
