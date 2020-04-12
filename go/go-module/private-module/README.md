@@ -22,8 +22,8 @@ cat ~/.gitconfig
 
 
 # This is Git's per-user configuration file.
-[url "https://{repo_owner}:{access_token}@github.com/repo_name/"]
-        insteadOf = https://github.com/repo_name/
+[url "git@github.com:{org_name}/{repo_name}.git"]
+    insteadOf = https://{org_name}/{repo_name}/captron_go_lib
 ```
 
 ## And run it
