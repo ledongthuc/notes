@@ -29,6 +29,6 @@ cat ~/.gitconfig
 ## And run it
 
 ```
-go get github.com/repo_name/
+go get github.com/{org_name}/repo_name/
 go run main.go
 ```
