@@ -15,3 +15,7 @@
 
 # Random
 [Dark pattern](https://queue.acm.org/detail.cfm?id=3400901)
+
+# Soft skill
+
+[How to read paper](https://web.stanford.edu/class/ee384m/Handouts/HowtoReadPaper.pdf)
