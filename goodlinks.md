@@ -1,4 +1,4 @@
-# Architect
+# Software Architect
 - [CI/CD For Microservices Using Monorepos](http://blog.shippable.com/ci/cd-of-microservices-using-mono-repos)
 - [What is the 3-Tier Architecture?](http://www.tonymarston.net/php-mysql/3-tier-architecture.html#mvc-and-3-tier-are-not-the-same)
 
@@ -12,6 +12,9 @@
 
 # Linux
 [Linux journey](https://linuxjourney.com/)
+
+# Performance
+[JVM False sharing](https://dzone.com/articles/what-false-sharing-is-and-how-jvm-prevents-it)
 
 # Random
 [Dark pattern](https://queue.acm.org/detail.cfm?id=3400901)
