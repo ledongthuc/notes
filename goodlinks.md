@@ -8,22 +8,21 @@
 
 # Go Language
 - [Ensmallening Go binaries by prohibiting comparisons](https://dave.cheney.net/2020/05/09/ensmallening-go-binaries-by-prohibiting-comparisons)
-- [How to handle errors in Go?
-[5 rules]](https://web3.coach/golang-how-to-handle-errors-five-rules)
+- [How to handle errors in Go? 5 rules](https://web3.coach/golang-how-to-handle-errors-five-rules)
 
 # Linux
-[Linux journey](https://linuxjourney.com/)
+- [Linux journey](https://linuxjourney.com/)
 
 # Performance
-[JVM False sharing](https://dzone.com/articles/what-false-sharing-is-and-how-jvm-prevents-it)
+- [JVM False sharing](https://dzone.com/articles/what-false-sharing-is-and-how-jvm-prevents-it)
 
 # Random
-[Dark pattern](https://queue.acm.org/detail.cfm?id=3400901)
-[Branching patterns](https://martinfowler.com/articles/branching-patterns.html)
-[Teach Yourself Computer Science](https://teachyourselfcs.com)
+- [Dark pattern](https://queue.acm.org/detail.cfm?id=3400901)
+- [Branching patterns](https://martinfowler.com/articles/branching-patterns.html)
+- [Teach Yourself Computer Science](https://teachyourselfcs.com)
 
 # Security
-[Everything PKI](https://smallstep.com/blog/everything-pki/)
+- [Everything PKI](https://smallstep.com/blog/everything-pki/)
 
 # Soft skill
-[How to read paper](https://web.stanford.edu/class/ee384m/Handouts/HowtoReadPaper.pdf)
+- [How to read paper](https://web.stanford.edu/class/ee384m/Handouts/HowtoReadPaper.pdf)
