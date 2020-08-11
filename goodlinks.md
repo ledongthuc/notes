@@ -2,6 +2,7 @@
 - [CI/CD For Microservices Using Monorepos](http://blog.shippable.com/ci/cd-of-microservices-using-mono-repos)
 - [What is the 3-Tier Architecture?](http://www.tonymarston.net/php-mysql/3-tier-architecture.html#mvc-and-3-tier-are-not-the-same)
 - [Parallel Computing](https://computing.llnl.gov/tutorials/parallel_comp/)
+- [The Architecture of Open Source Applications](http://www.aosabook.org/en/index.html)
 
 # Containers
 - [“Let’s use Kubernetes!” Now you have 8 problems](https://pythonspeed.com/articles/dont-need-kubernetes)
