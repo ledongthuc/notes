@@ -21,6 +21,7 @@
 - [Dark pattern](https://queue.acm.org/detail.cfm?id=3400901)
 - [Branching patterns](https://martinfowler.com/articles/branching-patterns.html)
 - [Teach Yourself Computer Science](https://teachyourselfcs.com)
+- [HTTP/3](https://http3-explained.haxx.se)
 
 # Security
 - [Everything PKI](https://smallstep.com/blog/everything-pki/)
