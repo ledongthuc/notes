@@ -1,0 +1,71 @@
+version: '2'
+services:
+  web:
+    image: httpd
+    ports:
+      - "80:80"
+    links:
+      - fluentd
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: app
+
+  fluentd:
+    image: grafana/fluent-plugin-loki:master
+    volumes:
+      - ./fluentd/conf:/fluentd/etc
+      - ./logs/:/var/log/fluent/
+    command:
+      - "fluentd"
+      - "-v"
+      - "-p"
+      - "/fluentd/plugins"
+    deploy:
+      mode: global
+    configs:
+      - source: loki_config
+        target: /fluentd/etc/loki/loki.conf
+    environment:
+      LOKI_URL: http://loki:3100
+      LOKI_USERNAME:
+      LOKI_PASSWORD:
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    networks:
+      - logflow
+
+  loki:
+    image: grafana/loki:1.6.1
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - logflow
+    volumes:
+      - ./loki/local-config.yaml:/etc/loki/local-config.yaml
+      - loki:/loki
+  promtail:
+    image: grafana/promtail:1.6.1
+    volumes:
+      - /var/log:/var/log
+    command: -config.file=/etc/promtail/config.yml
+    networks:
+      - logflow
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    networks:
+      - logflow
+    volumes:
+     - grafana:/var/lib/grafana
+
+volumes:
+ grafana:
+ loki:
+
+networks:
+  logflow:
