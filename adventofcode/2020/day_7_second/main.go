@@ -30,20 +30,17 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(CountContainerOf(nodes, "shiny gold"))
+	fmt.Println(CountOf(nodes, "shiny gold"))
 }
 
-func CountContainerOf(nodes Nodes, name string) int {
-	counter := map[string]struct{}{}
-	leafNode := nodes[name]
-	parents := leafNode.Parents
-	for len(parents) > 0 {
-		parent := parents[0]
-		parents = parents[1:len(parents)]
-		parents = append(parents, nodes[parent].Parents...)
-		counter[parent] = struct{}{}
+func CountOf(nodes Nodes, name string) int {
+	var counter int
+	node := nodes[name]
+	for _, child := range node.Children {
+		counter += child.Amount + child.Amount*CountOf(nodes, child.Name)
 	}
-	return len(counter)
+
+	return counter
 }
 
 func ParseNodes(rules string) (Nodes, error) {
