@@ -1,15 +1,23 @@
 version: '2'
 
-x-logging-gelf: &logging-gelf
+x-logging-application: &logging-application
   logging:
     driver: gelf
     options:
       gelf-address: udp://localhost:12201
       tag: "application-data"
 
+# USE for develop
+# x-logging-application: &logging-defaults
+#   logging:
+#     driver: json-file
+#     options:
+#       max-size: ${LOGGING_OPTIONS_MAX_SIZE}
+#       max-file: ${LOGGING_OPTIONS_MAX_FILE}
+
 services:
   web:
-    <<: *logging-gelf
+    <<: *logging-application
     image: httpd
     links:
       - logstash
