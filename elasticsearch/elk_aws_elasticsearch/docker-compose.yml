@@ -27,4 +27,7 @@ services:
       - ./services/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       - ./services/logstash/pipeline:/usr/share/logstash/pipeline:ro
     environment:
-      - LS_JAVA_OPTS=-Xmx256m -Xms256m
+      - LS_JAVA_OPTS=${LOGSTASH_ES_JAVA_OPTS}
+      - ELASTICSEARCH_URL=${ELASTICSEARCH_URL}
+      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME}
+      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD}
