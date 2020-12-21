@@ -1,0 +1,30 @@
+version: '2'
+
+x-logging-gelf: &logging-gelf
+  logging:
+    driver: gelf
+    options:
+      gelf-address: udp://localhost:12201
+      tag: "application-data"
+
+services:
+  web:
+    <<: *logging-gelf
+    image: httpd
+    links:
+      - logstash
+    ports:
+      - "8099:80"
+
+  logstash:
+    container_name: logstash
+    build:
+      context: services/logstash
+    ports:
+      - "12201:12201/udp"
+      - "5044:5044"
+    volumes:
+      - ./services/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./services/logstash/pipeline:/usr/share/logstash/pipeline:ro
+    environment:
+      - LS_JAVA_OPTS=-Xmx256m -Xms256m
