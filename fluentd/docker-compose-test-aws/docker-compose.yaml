@@ -1,21 +1,40 @@
 version: '2'
+
+### Use for all application except fluentd
+x-logging-application: &logging-application
+  logging:
+    driver: "fluentd"
+    options:
+      fluentd-address: localhost:24224
+      fluentd-async-connect: "true"
+      tag: application
+
+### Only use for fluentd
+x-logging-defaults: &logging-defaults
+  logging:
+    driver: ${LOGGING_DRIVER}
+    options:
+      max-size: ${LOGGING_OPTIONS_MAX_SIZE}
+      max-file: ${LOGGING_OPTIONS_MAX_FILE}
+
 services:
   web:
+    <<: *logging-application
     image: httpd
     ports:
-      - "80:80"
-    links:
-      - fluentd
-    logging:
-      driver: "fluentd"
-      options:
-        fluentd-address: localhost:24224
-        tag: httpd.access
+      - "8099:80"
 
   fluentd:
+    <<: *logging-defaults
     build: ./fluentd
     volumes:
       - ./fluentd/conf:/fluentd/etc
     ports:
       - "24224:24224"
       - "24224:24224/udp"
+    environment:
+      - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST}
+      - ELASTICSEARCH_SCHEME=${ELASTICSEARCH_SCHEME}
+      - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT}
+      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME}
+      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD}
