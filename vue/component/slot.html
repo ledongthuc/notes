@@ -1,0 +1,39 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+  <div id="app">
+    <my-component>
+    </my-component>
+  </div>
+  <script>
+    const RootComponent = {
+      data() {
+        return {
+          count: 4,
+        };
+      },
+    }
+    const app = Vue.createApp(RootComponent)
+
+    app.component('my-component', {
+      data() {
+        return {
+          internalCount: 5,
+        };
+      },
+      template: `
+<div>
+  <slot>10</slot> -- {{ internalCount }} -- <slot name="second"></slot> -- <slot name="third" :bind="internalCount"></slot>
+</div>`,
+    });
+
+    const vm = app.mount('#app')
+  </script>
+</body>
+</html>

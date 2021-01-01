@@ -1,0 +1,51 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+  </head>
+
+  <body>
+    <div id="app">
+        <div>
+          <p v-if="show">{{ text }} - {{ picked }} - {{ number }}</p>
+          <p><input type="input" v-model="text" /></p>
+          <p><input type="input" v-model.lazy="text" /> (lazy)</p>
+          <p><input type="input" v-model.trim="text" /> (trim)</p>
+          <p><input type="number" v-model.number="number" /> (number)</p>
+          <p><textarea v-model="text"></textarea></p>
+          <p><input type="checkbox" v-model="show" /></p>
+          <p>
+            <template v-for="option in options">
+              <p>{{option.name}} <input type="radio" v-model="picked" :value="option.value" /></p>
+            </template>
+          <p>
+            <select v-model="picked">
+              <option disabled value="">Please select one</option>
+              <option v-for="option in options" :value="option.value">{{ option.name }}</option>
+            </select>
+          </p>
+        </div>
+    </div>
+    <script>
+      const RootComponent = {
+        data() {
+          return {
+            picked: 'left',
+            options: [
+              {value: 'left', name: 'Left'},
+              {value: 'right', name: 'Right'},
+            ],
+            text: 'Hello world',
+            number: 0,
+            show: true,
+          };
+        },
+      }
+      const app = Vue.createApp(RootComponent)
+      const vm = app.mount('#app');
+    </script>
+  </body>
+</html>

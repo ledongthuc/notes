@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <script src="https://unpkg.com/vue@next"></script>
+  </head>
+  <div id="counter">
+    Counter: {{ counter }} <span v-bind:title="attributeMessage">This is title attribute</span>
+    <div>
+      <p>Message: {{ message }}</p>
+      <button v-on:click="reverseMessage">Reverse Message</button>
+    </div>
+    <div  v-if="show">
+      <p>Message2: {{ message2 }}</p>
+      <input type="input" v-model="message2">
+    </div>
+    <div>
+      <button v-on:click="toggleMessage">{{ showText }} message</button>
+    </div>
+    <div>
+      <ol>
+        <todo-item v-for="item in list" v-bind:todo="item" v-bind:key="item.id"></todo-item>
+      </ol>
+    </div>
+  </div>
+  <script>
+    const Counter = {
+      data() {
+        return {
+          counter: 0,
+          attributeMessage: 'You loaded this page on ' + new Date().toLocaleString(),
+          message: "Hello world",
+          message2: 'Hello world 2',
+          show: true,
+          showText: 'Hide',
+          list: [
+            { id: 'abc', text: 'My' },
+            { id: 'xyz', text: 'name' },
+            { id: 'lmn', text: 'is' },
+            { id: 'iop', text: 'Thuc' },
+          ],
+        }
+      },
+      mounted() {
+        setInterval(() => {
+          this.counter++
+        }, 1000)
+      },
+      methods: {
+        reverseMessage() {
+          this.message = this.message
+            .split('')
+            .reverse()
+            .join('');
+        },
+        toggleMessage() {
+          this.show = !this.show;
+          this.showText = this.show ? 'Hide' : 'Show'
+        }
+      },
+    }
+    
+    const app = Vue.createApp(Counter);
+    app.component('todo-item', {
+      props: ['todo'],
+      template: `<li>{{ todo.text }}</li>`
+    });
+    app.mount('#counter');
+  </script>
+</html>

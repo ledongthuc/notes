@@ -1,0 +1,163 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="https://unpkg.com/vue@next"></script>
+  <style type="text/css">
+    .foo {
+      color: red;
+    }
+    .bar {
+      background-color: green;
+    }
+    .baz {
+      font-weight: bold;
+    }
+    .active {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div>Count: {{ count }}</div>
+    <div><button v-on:click="increase">Increase</button></div>
+    <div><my-component title="Test inheritance" class="baz"></my-component></div>
+    <div><my-component :class="{ active: true }"></my-component></div>
+    <div><my-component-multi-roots :class="{ active: true }" @increasechild="increaseN"></my-component-multi-roots></div>
+    <div><custom-input v-model="searchText" @testEmitValidation="console.log($event);" ></custom-input> - {{ searchText }}</div>
+    <div><notice>hello</notice></div>
+    <div>
+      <div><component :is="currentComponent"></component></div>
+      <select v-model="currentComponent">
+        <option v-for="component in possibleComponents" :value="component">{{component}}</option>
+      </select>
+    </div>
+  </div>
+  <script>
+    const RootComponent = {
+      data() {
+        console.log('data()');
+        return {
+          count: 4,
+          searchText: 'Default text',
+          currentComponent: "my-component",
+          possibleComponents: ["my-component","my-component-multi-roots","custom-input","notice"],
+        };
+      },
+      provide: {
+        user: 'Thuc Le',
+      },
+      beforeCreate() {
+        console.log('beforeCreate(): count is: ' + this.count);
+      },
+      created() {
+        console.log('created(): count is: ' + this.count);
+      },
+      beforeMount() {
+        console.log('beforeMount(): count is: ' + this.count);
+      },
+      mounted() {
+        console.log('mounted(): count is: ' + this.count);
+      },
+      beforeUpdate() {
+        console.log('beforeUpdate(): count is: ' + this.count);
+      },
+      updated() {
+        console.log('updated(): count is: ' + this.count);
+      },
+      beforeUnmount() {
+        console.log('beforeUnmount(): count is: ' + this.count);
+      },
+      unmounted() {
+        console.log('unmounted(): count is: ' + this.count);
+      },
+      methods: {
+        increase() {
+          this.count++;
+        },
+        increaseN(n) {
+          this.count += n;
+        },
+      },
+    }
+    const app = Vue.createApp(RootComponent)
+
+    app.component('my-component', {
+      // inheritAttrs: false,
+      template: `<p class="foo bar">Hi!</p>`
+    });
+
+    app.component('my-component-multi-roots', {
+      inject: ['user'],
+      template: `
+    <p class="foo bar" :class="$attrs.class">Hi!</p>
+    <span>This is a child component with inject {{ user }}</span>
+    <button @click="$emit('increasechild', 10)">Child button</button>
+  `
+    });
+
+    app.component('custom-input', {
+      props: ['modelValue'],
+      emits: {
+        'update:modelValue': null,
+        'testEmitValidation': function() {
+          return false;
+        },
+      },
+      template: `
+        <input
+          :value="modelValue"
+          @input="$emit('update:modelValue', $event.target.value)"
+          @change="$emit('testEmitValidation')"
+        >
+      `
+    });
+
+    const subComponent = {
+      props: {
+        text: [String, Number],
+        text2: {
+          type: [String, Number],
+          required: true,
+          default: 100,
+        },
+        text3: {
+          type: Number,
+          default: function() {
+            return 100
+          },
+          validator: function(value) {
+            return value > 0;
+          },
+        },
+        number: Number,
+        list: Array,
+        obj: Object,
+      },
+      template: `
+        <div>
+          <span>{{ text }} - {{ number }} - {{ obj.text }}</span>
+          <p v-for="item in list">{{ item }}</p>
+        </div>
+      `,
+    }
+
+    app.component('notice', {
+      components: {
+        'sub-component': subComponent,
+      },
+      template: `
+        <div style="background-color: red; padding: 10px;">
+          <div style="background-color: green"><slot></slot> - 
+          <sub-component text="text from sub-component" text2="a" :number="3" :list="[1,2,3]" :obj="{text: 'Object field'}" /></div>
+        </div>
+      `
+    });
+
+    const vm = app.mount('#app')
+  </script>
+</body>
+</html>

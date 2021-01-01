@@ -1,0 +1,60 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script src="https://unpkg.com/vue@next"></script>
+  </head>
+
+  <body>
+    <div id="app">
+      <div>
+        <p>Has published books:</p>
+        <span>{{ publishedBooksMessage }} {{ now }}</span>
+      </div>
+      <div>Full name: {{ fullName }}</div>
+      <div>First name: {{ firstName }}</div>
+      <div>Last name: {{ lastName }}</div>
+    </div>
+    <script>
+      const RootComponent = {
+        data() {
+          return {
+            author: {
+              name: 'John Doe',
+              books: [
+                'Vue 2 - Advanced Guide',
+                'Vue 3 - Basic Guide',
+                'Vue 4 - The Mystery',
+              ],
+            },
+            firstName: 'Thuc',
+            lastName: 'Le',
+          };
+        },
+        computed: {
+          publishedBooksMessage() {
+            return this.author.books.length > 0 ? 'Yes' : 'No';
+          },
+          now() {
+            return Date.now();
+          },
+          fullName: {
+            get() {
+              return this.firstName + ' ' + this.lastName;
+            },
+            set(newValue) {
+              const names = newValue.split(' ')
+              this.firstName = names[0]
+              this.lastName = names[names.length - 1]
+            },
+          },
+        },
+      }
+      const app = Vue.createApp(RootComponent)
+      const vm = app.mount('#app');
+
+      vm.fullName = 'John Doe'
+    </script>
+  </body>
+</html>

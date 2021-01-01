@@ -1,0 +1,39 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script src="https://unpkg.com/vue@next"></script>
+    <style type="text/css">
+      .fade-enter-active,
+      .fade-leave-active {
+        transition: opacity 0.5s ease;
+      }
+
+      .fade-enter-from,
+      .fade-leave-to {
+        opacity: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <transition name="fade">
+        <div v-if="show">Panel</div>
+      </transition>
+      <button @click="show = !show">Toggle</button>
+    </div>
+    <script>
+      const RootComponent = {
+        data() {
+          return {
+            show: true,
+          }
+        }
+      }
+      const app = Vue.createApp(RootComponent)
+      const vm = app.mount('#app');
+    </script>
+  </body>
+</html>

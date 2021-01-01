@@ -1,0 +1,60 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+    <style type="text/css">
+      .active {
+        background-color: green;
+      }
+
+      .text-danger {
+        color: red;
+      }
+
+      .text-u {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+        <div :class="{ active: isActive, 'text-danger': hasError }">Hello</div>
+        <div :class="classObject">Hello 2</div>
+        <div :class="classArr">Hello 2</div>
+        <div :style="{ color: activeColor, fontSize: fontSize + 'px' }">Inline css</div>
+    </div>
+    <script>
+      const RootComponent = {
+        data() {
+          return {
+            classObject: {
+              active: true,
+              'text-danger': true,
+            },
+            classArr: [
+              'active', 'text-danger', {'text-u': true},
+            ],
+            isActive: true,
+            hasError: false,
+            activeColor: 'red',
+            fontSize: 30,
+          };
+        },
+        mounted() {
+          setInterval(() => {
+            this.isActive = !this.isActive
+          }, 1000);
+          setInterval(() => {
+            this.hasError = !this.hasError
+          }, 3000);
+        }
+      }
+      const app = Vue.createApp(RootComponent)
+      const vm = app.mount('#app');
+    </script>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script src="https://unpkg.com/vue@next"></script>
+  </head>
+
+  <body>
+    <div id="app">
+      <div>Init: {{ count }}</div>
+      <div><button @click="reset">Reset {{ getCount() }}</button></div>
+    </div>
+    <script>
+      const RootComponent = {
+        data() {
+          return {
+            count: 4,
+          }
+        },
+        mounted() {
+          setInterval(() => {
+            this.count++
+            this.checked = !this.checked;
+          }, 1000);
+        },
+        methods: {
+          reset() {
+            this.count = 0;
+          },
+          getCount() {
+            return this.count;
+          },
+        },
+      }
+      const app = Vue.createApp(RootComponent)
+      const vm = app.mount('#app')
+
+      setInterval(() => {
+        vm.reset();
+      }, 10000);
+    </script>
+  </body>
+</html>

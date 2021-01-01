@@ -1,0 +1,62 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+  </head>
+
+  <body>
+    <div id="app">
+        <div>
+          <h1 v-if="isActive">ON</h1>
+          <h1 v-else-if="isComplicated">COMPLICATED</h1>
+          <h1 v-else>OFF</h1>
+        </div>
+        <div>
+          <template v-if="ok">
+            <p>Title</p>
+            <p>Name</p>
+          </template>
+        </div>
+    </div>
+    <script>
+      const RootComponent = {
+        data() {
+          return {
+            status: 'active',
+            ok: true,
+          };
+        },
+        computed: {
+          isActive() {
+            return this.status === 'active';
+          },
+          isComplicated() {
+            return this.status === 'complicated';
+          },
+        },
+        mounted() {
+          setInterval(() => {
+            const r = Math.floor(Math.random() * 3);
+            if(r === 0) {
+              this.status = 'active';
+            }
+            if(r === 1) {
+              this.status = 'off';
+            }
+            if(r === 2) {
+              this.status = 'complicated';
+            }
+          }, 1000);
+          setInterval(() => {
+            this.ok = !this.ok;
+          }, 2000);
+        },
+      }
+      const app = Vue.createApp(RootComponent)
+      const vm = app.mount('#app');
+    </script>
+  </body>
+</html>

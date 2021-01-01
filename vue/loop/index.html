@@ -1,0 +1,53 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+  </head>
+
+  <body>
+    <div id="app">
+        <div>
+          <ul id="array-rendering">
+            <li v-for="n in even(numbers)">{{ n }}</li>
+            <li v-for="n in 2">{{ n }}</li>
+            <li v-for="(item, index) in items" :key="item.message">
+              {{ index }} - {{ item.message }}
+            </li>
+            <li v-for="(value, key, index) in myObject" :key="key">
+              {{ index }} {{ key }}: {{ value }}
+            </li>
+          </ul>
+        </div>
+    </div>
+    <script>
+      const RootComponent = {
+        data() {
+          return {
+            numbers: [ 1, 2, 3, 4, 5 ],
+            items: [{ message: 'Foo' }, { message: 'Bar' }],
+            myObject: {
+              title: 'How to do lists in Vue',
+              author: 'Jane Doe',
+              publishedAt: '2016-04-10'
+            },
+          };
+        },
+        mounted() {
+          setInterval(() => {
+            this.items.reverse();
+          }, 1000)
+        },
+        methods: {
+          even(numbers) {
+            return numbers.filter(number => number % 2 === 0)
+          },
+        },
+      }
+      const app = Vue.createApp(RootComponent)
+      const vm = app.mount('#app');
+    </script>
+  </body>
+</html>

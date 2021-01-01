@@ -1,0 +1,54 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script src="https://unpkg.com/vue@next"></script>
+  </head>
+
+  <body>
+    <div id="app">
+      <div v-once>Init: {{ count }}</div>
+      <div>Count: {{ count }}</div>
+      <div>Render text: {{ rawHTML }}</div>
+      <div>Render html: <span v-html="rawHTML"></span></div>
+      <div>Check: <input type="checkbox" v-bind:checked="checked"></div>
+      <div>Js expression: {{ checked ? 'checked' : 'unchecked' }}</div>
+      <div><a v-bind:[attributename]="url" v-on:[eventname]="toggleHello">Click me</a><span v-if="showHello">: hello</span></div>
+      <div><a href="https://google.com" v-on:click.prevent="toggleHello2">Click me 2</a><span v-if="showHello">: hello</span></div>
+      <div><a :href="url" @click="toggleHello">Click me 3</a><span v-if="showHello">: hello shorthand</span></div>
+    </div>
+    <script>
+      const RootComponent = {
+        data() {
+          return {
+            count: 4,
+            rawHTML: '<b>Bold text</b>',
+            checked: false,
+            attributename: 'href',
+            url: 'https://google.com',
+            showHello: false,
+            eventname: 'click'
+          }
+        },
+        mounted() {
+          setInterval(() => {
+            this.count++
+            this.checked = !this.checked;
+          }, 1000)
+        },
+        methods: {
+          toggleHello(e) {
+            e.preventDefault();
+            this.showHello = !this.showHello;
+          },
+          toggleHello2() {
+            this.showHello = !this.showHello;
+          },
+        },
+      }
+      const app = Vue.createApp(RootComponent)
+      const vm = app.mount('#app')
+    </script>
+  </body>
+</html>

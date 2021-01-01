@@ -1,0 +1,62 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+  </head>
+
+  <body>
+    <div id="app">
+        <div>
+          <p>{{ counter }}</p>
+          <button @click="increase">Increase</button>
+          <button @click="increaseN(2, $event)">Increase 2</button>
+          <p><a href="https://google.com" @click.prevent="increase">Google</a></p>
+          <p @click="increase"><button @click.stop="increase">Increase 3 (double event)</button></p>
+          <p @click.capture="increaseName('p')"><button @click="increaseName('button')">Increase 4 (with capture)</button></p>
+          <p @click="increaseName('p')"><button @click="increaseName('button')">Increase 4 (without capture)</button></p>
+          <p @click.self="increaseName('p')"><button @click="increaseName('button')">Increase 5 (self)</button></p>
+          <p><button @click.once="increaseName('button')">Increase 7 (once)</button></p>
+          <p><a href="https://google.com.vn" @click.passive="increaseForcePrevent('button', $event)">Increase 7 (passive)</a></p>
+          <p><span v-html="rawHTML"></span></p>
+          <p>enter: <input type="input" @keyup.enter="enter"></p>
+          <p>exact enter: <input type="input" @keyup.enter.exact="enter"></p>
+        </div>
+    </div>
+    <script>
+      const RootComponent = {
+        data() {
+          return {
+            rawHTML: '',
+            counter: 0,
+          };
+        },
+        methods: {
+          increase() {
+            this.increaseN(1);
+          },
+          increaseName(name) {
+            console.log('DEBUG: ', name);
+            this.increaseN(1);
+          },
+          increaseForcePrevent(name, event) {
+            event.preventDefault();
+            console.log('DEBUG: ', name);
+            this.increaseN(1);
+          },
+          increaseN(i, event) {
+            console.log('DEBUG: ', event);
+            this.counter += i;
+          },
+          enter() {
+            this.rawHTML += '<br/>';
+          },
+        },
+      }
+      const app = Vue.createApp(RootComponent)
+      const vm = app.mount('#app');
+    </script>
+  </body>
+</html>
