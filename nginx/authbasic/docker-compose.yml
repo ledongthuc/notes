@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  appservice:
+    image: ledongthuc/awssecretsmanagerui:latest
+  proxy:
+    container_name: reverse
+    hostname: reverse
+    image: nginx
+    ports:
+      - 8080:8080
+    volumes:
+      - ./custom.conf:/etc/nginx/conf.d/default.conf
+      - ./.htpasswd:/etc/apache2/.htpasswd
+    depends_on:
+      - appservice
