@@ -48,7 +48,9 @@ Reverse half part of linked list
  - Each pointer keep a current checking item of two parts.
  - Loop through item and compare their value.
  - If they of the same value, then it's a palindrome linked list.
+
 ![enter image description here](https://raw.githubusercontent.com/ledongthuc/notes/master/leetcode/palindrome-linked-list/palindrome_linked_list-Compare%202%20linked%20list.png)
+
 ## Total
  - Complexity: O(2n)
  - Space: O(7)
