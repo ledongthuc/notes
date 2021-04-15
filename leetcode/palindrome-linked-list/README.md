@@ -54,3 +54,80 @@ Reverse half part of linked list
 ## Total
  - Complexity: O(2n)
  - Space: O(7)
+
+## Example
+
+```
+/**
+ * Definition for singly-linked list.
+ * type ListNode struct {
+ *     Val int
+ *     Next *ListNode
+ * }
+ */
+func isPalindrome(head *ListNode) bool {
+    if head == nil || head.Next == nil {
+        return true
+    }
+    second := splitLinkedList(head)
+    reversedSecond := reverseLinkedList(second)
+    return compareLinkedLists(head, reversedSecond)
+}
+
+func splitLinkedList(head *ListNode) (second *ListNode) {
+    if head == nil || head.Next == nil {
+        return head
+    }
+    current := head
+    half := head
+    for {
+        // Even
+        if current.Next == nil {
+            second = half.Next
+            return second
+        }
+        // Odd
+        if current.Next.Next == nil {
+            second = half.Next
+            return second
+        }
+        current = current.Next.Next
+        half = half.Next
+    }
+    return half.Next
+}
+
+func reverseLinkedList(head *ListNode) (*ListNode) {
+    if head.Next == nil {
+        return head
+    }
+    current := head
+    next := head.Next
+    head.Next = nil
+    var tmp *ListNode
+    for {
+        tmp = next.Next
+        next.Next = current
+        current = next
+        next = tmp
+        if next == nil {
+            break
+        }
+    }
+    return current
+}
+
+func compareLinkedLists(first, second *ListNode) bool {
+    for second != nil {
+        if first == nil && second == nil {
+            return true
+        }
+        if first == nil || second == nil || first.Val != second.Val {
+            return false
+        }
+        first = first.Next
+        second = second.Next
+    }
+    return true
+}
+```
