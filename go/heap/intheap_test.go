@@ -5,42 +5,6 @@ import (
 	"testing"
 )
 
-func TestInitHeapMinInt(t *testing.T) {
-	tests := []struct {
-		name string
-		arr  []int
-		want *HeapMinInt
-	}{
-		{
-			name: "Test",
-			arr:  []int{2, 1, 5},
-			want: &HeapMinInt{1, 2, 5},
-		},
-		{
-			name: "Test 2",
-			arr:  []int{2, 7, 4, 1, 8, 1},
-			want: &HeapMinInt{1, 2, 1, 7, 8, 4},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := InitHeapMinInt(tt.arr); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("InitHeapMinInt() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestHeapMinInt_Pop(t *testing.T) {
-	h := InitHeapMinInt([]int{2, 7, 4, 1, 8, 1})
-	expects := []int{1, 1, 2, 4, 7, 8}
-	for index, expect := range expects {
-		if item := h.Pop(); item != expect {
-			t.Errorf("HeapMinInt.Pop()[%d] = %v, want %v", index+1, item, expect)
-		}
-	}
-}
-
 func TestInitHeapMaxInt(t *testing.T) {
 	tests := []struct {
 		name string
@@ -77,7 +41,7 @@ func TestHeapMaxInt_Pop(t *testing.T) {
 	expects := []int{8, 7, 4, 2, 1, 1}
 	for index, expect := range expects {
 		if item := h.Pop(); item != expect {
-			t.Errorf("HeapMaxInt.Pop()[%d] = %v, want %v", index+1, item, expect)
+			t.Errorf("HeapMaxInt.Pop()[%d] = %v, want %v", index, item, expect)
 		}
 	}
 }

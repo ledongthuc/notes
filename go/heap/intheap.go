@@ -1,55 +1,5 @@
 package heap
 
-type HeapMinInt []int
-
-func InitHeapMinInt(arr []int) *HeapMinInt {
-	heap := HeapMinInt(arr)
-	for i := len(heap)/2 - 1; i >= 0; i-- {
-		heap.heapifyDown(i)
-	}
-	return &heap
-}
-
-func (h *HeapMinInt) Pop() int {
-	item := (*h)[0]
-	(*h) = (*h)[1:len(*h)]
-	h.heapifyDown(0)
-	return item
-}
-
-func (h *HeapMinInt) Push(item int) {
-	(*h) = append(*h, item)
-	h.heapifyUp(len(*h) - 1)
-}
-
-func (h *HeapMinInt) heapifyDown(i int) {
-	min := i
-	left := 2*i + 1
-	right := 2*i + 2
-
-	if left < len(*h) && (*h)[left] < (*h)[min] {
-		min = left
-	}
-
-	if right < len(*h) && (*h)[right] < (*h)[min] {
-		min = right
-	}
-
-	if min != i {
-		(*h)[i], (*h)[min] = (*h)[min], (*h)[i]
-		h.heapifyDown(min)
-	}
-}
-
-func (h *HeapMinInt) heapifyUp(i int) {
-	parent := (i - 1) / 2
-	if (*h)[i] >= (*h)[parent] {
-		return
-	}
-	(*h)[i], (*h)[parent] = (*h)[parent], (*h)[i]
-	h.heapifyUp(parent)
-}
-
 type HeapMaxInt []int
 
 func InitHeapMaxInt(arr []int) *HeapMaxInt {
@@ -62,7 +12,8 @@ func InitHeapMaxInt(arr []int) *HeapMaxInt {
 
 func (h *HeapMaxInt) Pop() int {
 	item := (*h)[0]
-	(*h) = (*h)[1:len(*h)]
+	(*h)[0] = (*h)[len(*h)-1]
+	(*h) = (*h)[:len(*h)-1]
 	h.heapifyDown(0)
 	return item
 }
@@ -115,19 +66,11 @@ func (h *HeapMaxInt) Mash2TopAndPushRemaning() int {
 		return (*h)[0]
 	}
 
-	first := (*h)[0]
-	second := (*h)[1]
-
-	if len(*h) > 2 && (*h)[2] > second {
-		second = (*h)[2]
-		(*h)[1], (*h)[2] = (*h)[2], (*h)[1]
-	}
-
+	first := h.Pop()
+	second := h.Pop()
 	remaining := first - second
-	(*h) = (*h)[2:len(*h)]
 	if remaining > 0 {
-		(*h) = append(*h, remaining)
+		h.Push(remaining)
 	}
-	h.heapify(0)
 	return remaining
 }
