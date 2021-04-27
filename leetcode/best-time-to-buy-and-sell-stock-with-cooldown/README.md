@@ -151,8 +151,8 @@ After apply optimization, it should be:
 
 ```
 MaxProfit(t) = getMax(
-	MaxProfit(t-1),                       # t = cooldown
-	price(t) - minPrice(t-1),             # sell t, buy from min in range 0 -> t-1
+	MaxProfit(t-1),                                                  # t = cooldown
+	price(t) - minPrice(t-1),                                        # sell t, buy from min in range 0 -> t-1
 	price(t) - getMin( MinC(t-2), price(t-1) - MaxProtfit(t-3) ),    # sell t, buy from the date next to cooldown with best profit
 )
 ```
