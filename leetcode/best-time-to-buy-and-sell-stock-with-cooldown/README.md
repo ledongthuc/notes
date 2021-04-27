@@ -151,3 +151,57 @@ MaxProfit(t) = getMax(
 	price(t) - getMin( minX(t-2), price(t-1) - MaxProtfit(t-3) ),    # sell t, buy from the date next to cooldown with best profit
 )
 ```
+
+```go
+func maxProfit(prices []int) int {
+    if len(prices) <= 1 {
+        return 0
+    }
+    if len(prices) == 2 {
+        return max(0, prices[1] - prices[0])
+    }
+
+    minPrices := make([]int, len(prices), len(prices))
+    minPrices[0] = prices[0]
+    minPrices[1] = min(prices[0], prices[1])
+    minX := make([]int, len(prices), len(prices))
+    minX[0] = prices[0]
+    minX[1] = prices[1]
+    maxProfit := make([]int, len(prices), len(prices))
+    maxProfit[0] = 0
+    maxProfit[1] = max(0, prices[1] - prices[0])
+
+    for i := 2; i < len(prices); i++ {
+        minPrices[i] = min(prices[i], minPrices[i-1])
+        minX[i] = min( minX[i-1], prices[i] - maxProfit[i-2])
+        maxProfit[i] = max(
+            maxProfit[i-1], 
+            prices[i] - minX[i-1],
+            prices[i] - minPrices[i-1],
+        )
+    }
+
+    return maxProfit[len(prices) - 1]
+}
+
+func min(i, j int) int {
+    if i < j {
+        return i
+    }
+    return j
+}
+
+func max(numbers ...int) int {
+    if len(numbers) == 0 {
+        return 0
+    }
+
+    max := numbers[0]
+    for _, n := range numbers {
+        if n > max {
+            max = n
+        }
+    }
+    return max
+}
+```
