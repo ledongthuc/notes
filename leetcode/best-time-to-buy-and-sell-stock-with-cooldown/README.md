@@ -129,7 +129,7 @@ minPriceToBuyAfterCooldown(t) = getMin( C(t-1), price(t) - MaxProfit(t-2) )
 
 So, we can calculate and cache the `minPriceToBuyAfterCooldown(t)` by pickup minimum value of:
  - price(t) - MaxProtfit(t-2): in this case, we buy on (t), cooldown on (t-1), sell on (t-2). So the price gap here is new on (t) and last selling(t-2).
- - MinC(t-1): check previous date if cooldown on ((t-1)-1). If it has smaller price to buy, then it's worth to buy instead.
+ - minPriceToBuyAfterCooldown(t-1): check previous date if cooldown on ((t-1)-1). If it has smaller price to buy, then it's worth to buy instead.
 
 Now, we can cache the `minPriceToBuyAfterCooldown` everyday to reuse.
 To calculate MaxProfit(t) if has cooldown, it's gain from minimum price date from `minPriceToBuyAfterCooldown` of (t-1) to price(t)
@@ -137,7 +137,7 @@ To calculate MaxProfit(t) if has cooldown, it's gain from minimum price date fro
 ```
 MaxProfit(t) if cooldown on (x-1) = price(t) - minPriceToBuyAfterCooldown(t-1)
 <=>
-MaxProfit(t) if cooldown on (x-1) = price(t) - getMin( MinC(t-2), price(t-1) - MaxProtfit(t-3) )
+MaxProfit(t) if cooldown on (x-1) = price(t) - getMin( minPriceToBuyAfterCooldown(t-2), price(t-1) - MaxProtfit(t-3) )
 ```
 
 **Solution after optimization**
@@ -148,6 +148,6 @@ After apply optimization, it should be:
 MaxProfit(t) = getMax(
 	MaxProfit(t-1),                                                  # t = cooldown
 	price(t) - minPrice(t-1),                                        # sell t, buy from min in range 0 -> t-1
-	price(t) - getMin( MinC(t-2), price(t-1) - MaxProtfit(t-3) ),    # sell t, buy from the date next to cooldown with best profit
+	price(t) - getMin( minPriceToBuyAfterCooldown(t-2), price(t-1) - MaxProtfit(t-3) ),    # sell t, buy from the date next to cooldown with best profit
 )
 ```
