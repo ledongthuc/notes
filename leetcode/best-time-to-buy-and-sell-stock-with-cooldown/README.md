@@ -9,7 +9,7 @@ The solution of this problem is inherit from https://github.com/ledongthuc/notes
 It means we will go through date by date, find the maximum profit we can have in this date.
 But first, let's check cases that we have on random date:
 
-**Case1: Starting point**
+**Case 1: Starting point**
 
 Nothing special here.
 As we can see, we can't buy and sell to any profit from same date.
@@ -152,7 +152,7 @@ After apply optimization, it should be:
 ```
 MaxProfit(t) = getMax(
 	MaxProfit(t-1), 
-	price(t) - min,
+	price(t) - minPrice(t-1),
 	price(t) - getMin( MinC(t-2), price(t-1) - MaxProtfit(t-3),
 )
 ```
