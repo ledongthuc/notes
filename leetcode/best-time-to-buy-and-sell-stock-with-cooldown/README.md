@@ -18,30 +18,37 @@ maxProfit(0) = 0
 ```
 
 ![enter image description here](https://raw.githubusercontent.com/ledongthuc/notes/master/leetcode/best-time-to-buy-and-sell-stock-with-cooldown/BestTimeToBuyAndSellStockWithCooldown-Chart-0.png)
+
 ## Cooldown date
 
 If a date is cooldown date, it means we can't buy anything, and of couse we can't sell anything too (because have just sell yesterday).
 So, max profit of cooldown date is always same profit of yesterday
+
 ```
 maxProfit(t) = maxProfit(t-1)
 ```
 
 ![enter image description here](https://raw.githubusercontent.com/ledongthuc/notes/master/leetcode/best-time-to-buy-and-sell-stock-with-cooldown/BestTimeToBuyAndSellStockWithCooldown-Chart-cooldown.png)
+
 ## Selling date
 
 If we decide to sell on date (t), the profit will be the gain from buying price to price today (t)
 The buying price is the min price from beginning to (t).
 
 ![enter image description here](https://raw.githubusercontent.com/ledongthuc/notes/master/leetcode/best-time-to-buy-and-sell-stock-with-cooldown/BestTimeToBuyAndSellStockWithCooldown-Chart-sell.png)
+
 But let's check an special case that we buy-sell many times, we will have cooldown date between buy-sell cycle
 
 ![enter image description here](https://raw.githubusercontent.com/ledongthuc/notes/master/leetcode/best-time-to-buy-and-sell-stock-with-cooldown/BestTimeToBuyAndSellStockWithCooldown-Chart-sell-with-cooldown.png)
+
 So with this special case, we can see max profit of date (t) can be bigger if we can split the deal to multiple buy-sell.
 Then max profit in this case should be:
+
 ```
 MaxProfit(t) = getMax(price(t) - min, price(t) - price(x) + MaxProtfit(x-2))
 | with x = range 2 -> t-1
 ```
+
 With (x) is the the date in range from 0 to (t-1) that has best profit.
 
 ## Solution
