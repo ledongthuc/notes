@@ -153,6 +153,6 @@ After apply optimization, it should be:
 MaxProfit(t) = getMax(
 	MaxProfit(t-1), 
 	price(t) - minPrice(t-1),
-	price(t) - getMin( MinC(t-2), price(t-1) - MaxProtfit(t-3),
+	price(t) - getMin( MinC(t-2), price(t-1) - MaxProtfit(t-3) ),
 )
 ```
