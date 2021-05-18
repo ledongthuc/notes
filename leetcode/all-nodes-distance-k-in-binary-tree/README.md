@@ -10,7 +10,7 @@ Let's split the big proble to smaller parts:
  	- To detect if any target's parents match with node `k`
 	- To find node `k-n` with another branches that doesn't contain target
 
- ```
+ ```go
  /**
  * Definition for a binary tree node.
  * type TreeNode struct {
