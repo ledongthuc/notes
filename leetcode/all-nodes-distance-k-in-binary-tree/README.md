@@ -10,6 +10,8 @@ Let's split the big proble to smaller parts:
  	- To detect if any target's parents match with node `k`
 	- To find node `k-n` with another branches that doesn't contain target
 
+ ![enter image description here](https://raw.githubusercontent.com/ledongthuc/notes/master/leetcode/all-nodes-distance-k-in-binary-tree/all-nodes-distance-k-in-binary-tree.png)
+
  ```go
  /**
  * Definition for a binary tree node.
@@ -89,5 +91,3 @@ func down(node *TreeNode, k int) ([]int) {
     return result
 }
  ```
-
- ![enter image description here](https://raw.githubusercontent.com/ledongthuc/notes/master/leetcode/all-nodes-distance-k-in-binary-tree/all-nodes-distance-k-in-binary-tree.png)
