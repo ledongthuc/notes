@@ -1,6 +1,6 @@
-# Add Binary
+# Multiply strings
 
-https://leetcode.com/problems/add-binary/
+https://leetcode.com/problems/multiply-strings
 
 ## Summary
 
