@@ -1,6 +1,8 @@
 name: Destroy PR qa environment
 
-on: pull_request[closed]
+on:
+  pull_request:
+    types: [closed]
 
 jobs:
   labelPR:
