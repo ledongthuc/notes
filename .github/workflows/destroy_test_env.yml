@@ -18,12 +18,12 @@ jobs:
         uses: fjogeleit/http-request-action@master
         with:
           # url: '${{ secrets.ARGOCD_HOST }}/applications/pr$BUILD_NUMBER'
-          url: '${{ secrets.ARGOCD_HOST }}/applications/pr1643'
+          url: '${{ secrets.ARGOCD_TEST_ENV_HOST }}/api/v1/applications/pr1643'
           method: 'DELETE'
           customHeaders: |
             {
               "Content-Type":"application/json", 
-              "Authorization": "Bearer ${{ secrets.ARGOCD_TOKEN }}"
+              "Authorization": "Bearer ${{ secrets.ARGOCD_TEST_ENV_TOKEN }}"
             }
       - name: Notify
         uses: actions/github-script@v4
