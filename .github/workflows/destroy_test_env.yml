@@ -5,11 +5,35 @@ on:
     types: [closed]
 
 jobs:
-  labelPR:
+  destroyPullRequestQAEnvironment:
     name: Destroy PR qa environment
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/github-script@v4
+      - uses: clowdhaus/argo-cd-action/@main
+        with:
+          version: 2.0.0
+          command: version
+          options: --client
+      - name: Deploy Stage
+      uses: fjogeleit/http-request-action@master
+      with:
+        url: '${{ secrets.ARGOCD_HOST }}/applications/pr$BUILD_NUMBER'
+        method: 'DELETE'
+        customHeaders:|
+        {
+          "Content-Type":"application/json", 
+          "PlanUrl": "$(system.CollectionUri)", 
+          "ProjectId": "$(system.TeamProjectId)", 
+          "HubName": "$(system.HostType)", 
+          "PlanId": "$(system.PlanId)", 
+          "JobId": "$(system.JobId)", 
+          "TimelineId": "$(system.TimelineId)", 
+          "TaskInstanceId": "$(system.TaskInstanceId)", 
+          "AuthToken": "$(system.AccessToken)",
+          "Authorization": "Bearer $(argoCDToken)"
+        }
+      - name: Notify
+        uses: actions/github-script@v4
         with:
           script: |
             await github.issues.createComment({
@@ -18,3 +42,29 @@ jobs:
               repo: context.repo.repo,
               body: '/azp run destroy'
             })
+
+
+  - job: remove_argo_project
+    displayName: Remove ArgoCD project
+    pool: server
+    steps:
+    - task: InvokeRESTAPI@1
+      inputs:
+        connectionType: 'connectedServiceName'
+        serviceConnection: 'ArgoCD2'
+        method: 'DELETE'
+        headers: |
+          {
+          "Content-Type":"application/json", 
+          "PlanUrl": "$(system.CollectionUri)", 
+          "ProjectId": "$(system.TeamProjectId)", 
+          "HubName": "$(system.HostType)", 
+          "PlanId": "$(system.PlanId)", 
+          "JobId": "$(system.JobId)", 
+          "TimelineId": "$(system.TimelineId)", 
+          "TaskInstanceId": "$(system.TaskInstanceId)", 
+          "AuthToken": "$(system.AccessToken)",
+          "Authorization": "Bearer $(argoCDToken)"
+          }
+        urlSuffix: '/applications/pr$(System.PullRequest.PullRequestNumber)'
+        waitForCompletion: 'false'
