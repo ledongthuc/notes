@@ -22,15 +22,7 @@ jobs:
           customHeaders: |
             {
               "Content-Type":"application/json", 
-              "PlanUrl": "$(system.CollectionUri)", 
-              "ProjectId": "$(system.TeamProjectId)", 
-              "HubName": "$(system.HostType)", 
-              "PlanId": "$(system.PlanId)", 
-              "JobId": "$(system.JobId)", 
-              "TimelineId": "$(system.TimelineId)", 
-              "TaskInstanceId": "$(system.TaskInstanceId)", 
-              "AuthToken": "$(system.AccessToken)",
-              "Authorization": "Bearer $(argoCDToken)"
+              "Authorization": "Bearer ${{ secrets.ARGOCD_TOKEN }}"
             }
       - name: Notify
         uses: actions/github-script@v4
