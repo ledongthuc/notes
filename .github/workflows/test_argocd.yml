@@ -9,16 +9,10 @@ jobs:
     name: Destroy PR qa environment
     runs-on: ubuntu-latest
     steps:
-      #      - uses: clowdhaus/argo-cd-action/@main
-      #        with:
-      #          version: 2.0.0
-      #          command: version
-      #          options: --client
       - name: Deploy Stage
         uses: fjogeleit/http-request-action@master
         with:
-          # url: '${{ secrets.ARGOCD_HOST }}/applications/pr$BUILD_NUMBER'
-          url: '${{ secrets.ARGOCD_TEST_ENV_HOST }}/api/v1/applications/pr1643'
+          url: '${{ secrets.ARGOCD_HOST }}/applications/pr$BUILD_NUMBER'
           method: 'DELETE'
           customHeaders: |
             {
@@ -33,5 +27,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '/azp run destroy'
+              body: 'https://$BUILD_NUMBER.test.limina.app destroyed'
             })
