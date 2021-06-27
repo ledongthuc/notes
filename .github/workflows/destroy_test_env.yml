@@ -9,29 +9,29 @@ jobs:
     name: Destroy PR qa environment
     runs-on: ubuntu-latest
     steps:
-      - uses: clowdhaus/argo-cd-action/@main
-        with:
-          version: 2.0.0
-          command: version
-          options: --client
+      #      - uses: clowdhaus/argo-cd-action/@main
+      #        with:
+      #          version: 2.0.0
+      #          command: version
+      #          options: --client
       - name: Deploy Stage
         uses: fjogeleit/http-request-action@master
         with:
           url: '${{ secrets.ARGOCD_HOST }}/applications/pr$BUILD_NUMBER'
           method: 'DELETE'
-          customHeaders:|
-          {
-            "Content-Type":"application/json", 
-            "PlanUrl": "$(system.CollectionUri)", 
-            "ProjectId": "$(system.TeamProjectId)", 
-            "HubName": "$(system.HostType)", 
-            "PlanId": "$(system.PlanId)", 
-            "JobId": "$(system.JobId)", 
-            "TimelineId": "$(system.TimelineId)", 
-            "TaskInstanceId": "$(system.TaskInstanceId)", 
-            "AuthToken": "$(system.AccessToken)",
-            "Authorization": "Bearer $(argoCDToken)"
-          }
+          customHeaders: |
+            {
+              "Content-Type":"application/json", 
+              "PlanUrl": "$(system.CollectionUri)", 
+              "ProjectId": "$(system.TeamProjectId)", 
+              "HubName": "$(system.HostType)", 
+              "PlanId": "$(system.PlanId)", 
+              "JobId": "$(system.JobId)", 
+              "TimelineId": "$(system.TimelineId)", 
+              "TaskInstanceId": "$(system.TaskInstanceId)", 
+              "AuthToken": "$(system.AccessToken)",
+              "Authorization": "Bearer $(argoCDToken)"
+            }
       - name: Notify
         uses: actions/github-script@v4
         with:
