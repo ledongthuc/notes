@@ -12,7 +12,7 @@ jobs:
       - name: Deploy Stage
         uses: fjogeleit/http-request-action@master
         with:
-          url: '${{ secrets.ARGOCD_HOST }}/applications/pr$BUILD_NUMBER'
+          url: '${{ secrets.ARGOCD_TEST_ENV_ARGOCD_HOST }}/applications/pr$BUILD_NUMBER'
           method: 'DELETE'
           customHeaders: |
             {
