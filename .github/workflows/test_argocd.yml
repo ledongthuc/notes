@@ -1,0 +1,31 @@
+name: Destroy PR qa environment
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  destroyPullRequestQAEnvironment:
+    name: Destroy PR qa environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Stage
+        uses: fjogeleit/http-request-action@master
+        with:
+          url: '${{ secrets.ARGOCD_HOST }}/applications/pr$BUILD_NUMBER'
+          method: 'DELETE'
+          customHeaders: |
+            {
+              "Content-Type":"application/json", 
+              "Authorization": "Bearer ${{ secrets.ARGOCD_TEST_ENV_TOKEN }}"
+            }
+      - name: Notify
+        uses: actions/github-script@v4
+        with:
+          script: |
+            await github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'https://$BUILD_NUMBER.test.limina.app destroyed'
+            })
