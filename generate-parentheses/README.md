@@ -1,3 +1,12 @@
+# Generate Parentheses
+
+ - With any `n` is greater than 1, we can generate cases:
+   - () + generate(n-1)
+   - generate(n-1) + ()
+   - ( generate(n-1) )
+ - Use the recursion until n = 1.
+ - Use hash map to avoid duplicated results
+
 ```go
 func generateParenthesis(n int) []string {
     if n == 1 {

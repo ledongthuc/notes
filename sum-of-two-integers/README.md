@@ -1,3 +1,7 @@
+# Sum of Two Integers
+
+ - Use bitwise https://en.wikipedia.org/wiki/Adder_%28electronics%29#Half_adder
+
 ```go
 // https://en.wikipedia.org/wiki/Adder_%28electronics%29#Half_adder
 func getSum(a int, b int) int {

@@ -1,3 +1,8 @@
+# Valid Parentheses
+
+ - Use stack to store closing characters "(, [, {" each we see any opening characters "), ], }"
+ - After going through input string, if the stack is not empty, it's mean the string's invalid Parentheses
+
 ```go
 func isValid(s string) bool {
     starts := map[string]struct{}{

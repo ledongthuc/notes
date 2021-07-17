@@ -1,3 +1,7 @@
+# Two Sum
+
+ - With each item in `nums`,  check if any existed number that's equal `target-num`. They are pair number of result
+
 ```go
 func twoSum(nums []int, target int) []int {
     m := make(map[int]int)
