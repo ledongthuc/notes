@@ -1,4 +1,10 @@
-Generate 100k fields and grouping them per 10k
+# Generate 100k records and group each 10k
+
+Inspired from https://avi.im/blag/2021/fast-sqlite-inserts/#io-time
+
+I tried to implement a record generator that generate 100k and groups each 10k. The test doesn't include database inserting.
+
+It's not fair to compare my result with them, without inconsistent running machine and purpose. Just for fun.
 
 run `make`
 
