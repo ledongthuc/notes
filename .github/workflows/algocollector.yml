@@ -2,8 +2,10 @@ name: WeBuild algorithm collector
 
 on:
   schedule:
-    - cron:  '0 0 * * 0'
-  workflow_dispatch
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+    branches:
+      - main
 
 jobs:
   collectWeBuildAlgorithmPRs:
