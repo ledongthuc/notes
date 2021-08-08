@@ -18,6 +18,6 @@ jobs:
         go-version: 1.16.x
     - name: Collect
       run: |
-        go install github.com/ruby-vietnam/hardcore-rule/algorithms/collector
+        go install github.com/ruby-vietnam/hardcore-rule/algorithms/collector@latest
         ACCESS_TOKEN=${{ secrets.rubyvn_algorithms_collector }} OWNER=ruby-vietnam REPO=hardcore-rule collector
 
