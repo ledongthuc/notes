@@ -19,5 +19,5 @@ jobs:
     - name: Collect
       run: |
         ACCESS_TOKEN=${{ secrets.rubyvn_algorithms_collector }} OWNER=ruby-vietnam REPO=hardcore-rule go install github.com/ruby-vietnam/hardcore-rule/algorithms/collector@latest;
-        ACCESS_TOKEN=${{ secrets.rubyvn_algorithms_collector }} OWNER=ruby-vietnam REPO=hardcore-rule collector
+        ACCESS_TOKEN=${{ secrets.rubyvn_algorithms_collector }} REAL_MODE=true OWNER=ruby-vietnam REPO=hardcore-rule collector
 
