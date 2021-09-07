@@ -2,7 +2,7 @@ name: WeBuild algorithm collector
 
 on:
   schedule:
-    - cron: '0 17 * * 1'
+    - cron: '0 17 * * SUN'
   workflow_dispatch:
     branches:
       - main
