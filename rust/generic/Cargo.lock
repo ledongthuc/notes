@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "ownership"
+name = "generic"
 version = "0.1.0"

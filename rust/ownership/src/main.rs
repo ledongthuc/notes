@@ -1,52 +1,51 @@
 fn main() {
-    // Stack copy
-    let x = 5;
-    let y = x;
+    println!("Mutable string"); 
+    let mut s = String::from("Hello");
+    s.push_str(", world!");
+    println!("s: {}", s);
 
-    println!("x = {}, y = {}", x, y);
+    println!("Shallow copy of complex data"); 
+    let s2 = s;
+    println!("s2: {}", s2);
+    // failed following line because s is not owner of string litteral anymore
+    // s2 borrowed s
+    // println!("s: {}", s); 
 
-    // Heap copy
-    let s1 = String::from("hello");
-    // Get error because only one ownership
-    let s2 = s1;
+    println!("Deep copy of complex data"); 
+    let s3 = s2.clone();
+    println!("s3: {}", s3); 
+    println!("s2: {}", s2); 
 
-    // crash because s1 give ownership to s2
-    // println!("s1: {}, world!", s1);
-    println!("s2: {}, world!", s2);
-     let s3 = s2.clone();
-    println!("s2: {}, world!", s2);
-    println!("s3: {}, world!", s3);
+    
+    println!("Stack data only copy"); 
+    let i1 = 10;
+    let i2 = i1;
+    println!("i1: {}, i2: {}", i1, i2); 
 
-    let s = String::from("hello");
-    takes_ownership(s);
-    // build failed because s's changed ownership
-    //  println!("{}", s); 
+    println!("Ownership with function parameter");
+    let fs = String::from("test");
+    takes_ownership(fs);
+    // following line will error because the owner ship of data in fS are moved
+    // println!("fS (after function call): {}", fS);
+    
+    let fs2 = String::from("test2");
+    let fs3 = takes_and_gives_back(fs2);
+    println!("fs3 (in function call): {}", fs3);
 
-    let x = 5;
-    makes_copy(x);
-    // success because i32 is scala type and it's make copy, not change owner
-    println!("x: {}", x); 
-
-    let x2 = give_ownership();
-    println!("x2: {}", x); 
-
-    let x3 = take_and_give_ownership(x2);
-    println!("x3: {}", x3); 
+    let fi = 10;
+    makes_copy(fi);
+    println!("fI (in function call): {}", fi);
 }
 
 fn takes_ownership(some_string: String) {
-    println!("{}", some_string);
+    println!("fS (in function call): {}", some_string);
 }
 
-fn give_ownership() -> String {
-    let example_string = String::from("hello");
-    example_string
-}
-
-fn take_and_give_ownership(x: String) -> String {
-    x
+fn takes_and_gives_back(some_string: String) -> String {
+    println!("fs2 (in function call): {}", some_string);
+    some_string
 }
 
 fn makes_copy(some_integer: i32) {
-    println!("{}", some_integer);
+    println!("fI (in function call): {}", some_integer);
 }
