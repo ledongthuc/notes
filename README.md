@@ -9,6 +9,6 @@
 
 ![Gopher](/pictures/gopher/gophercolor.jpg)
 
-![Rustpher](/pictures/gopher/grabc.jpg)
+![Rustpher](/pictures/rustpher/grabc.jpg)
 
-![Rustpher](/pictures/gopher/grabg.jpg)
+![Rustpher](/pictures/rustpher/grabg.jpg)
