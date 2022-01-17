@@ -4,11 +4,11 @@ import "fmt"
 
 // Implement of Stringer
 type Item struct {
-	Name string
+	Name     string
 	Quantity int
 }
 
-func (i Item) String()  string{
+func (i Item) String() string {
 	return fmt.Sprintf("%s: %d", i.Name, i.Quantity)
 }
 
@@ -35,9 +35,10 @@ type LinkedItem[T1 any, T2 any] struct {
 
 // Type Generic
 type Vector[T any] []T
+
 func (v *Vector[T]) Push(x T) { *v = append(*v, x) }
 
-// Underline with string type 
+// Underline with string type
 type AnyString interface {
 	~string
 }
@@ -48,6 +49,26 @@ func PrintAnyString[T AnyString](s T) {
 	fmt.Println(s)
 }
 
+// Union contrants types
+type UnionSignedNumber interface {
+	~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64
+}
+
+func SumUnionSignedNumber[T UnionSignedNumber](x, y T) T {
+	return x + y
+}
+
+func PrintMaxUnionSignedNumber[T UnionSignedNumber](x, y T) {
+	if x > y {
+		fmt.Printf("%v > %v\n", x, y)
+	}
+	if x < y {
+		fmt.Printf("%v < %v\n", x, y)
+	}
+	if x == y {
+		fmt.Printf("%v == %v\n", x, y)
+	}
+}
 
 // Collection funcs
 
@@ -78,18 +99,18 @@ func Find[T any](source []T, conditionFunc func(item T) bool) (out T, err error)
 
 func main() {
 	fmt.Println("Print Implicit:")
-	Print[int]([]int{1,2,3,4})
+	Print[int]([]int{1, 2, 3, 4})
 
 	fmt.Println("Print Explicit:")
-	Print([]int{1,2,3,4})
+	Print([]int{1, 2, 3, 4})
 
 	fmt.Println("Stringfy: ", Stringfy([]Item{
-		{Name: "Test 1",Quantity: 1},
-		{Name: "Test 2",Quantity: 2},
-		{Name: "Test 3",Quantity: 3},
+		{Name: "Test 1", Quantity: 1},
+		{Name: "Test 2", Quantity: 2},
+		{Name: "Test 3", Quantity: 3},
 	}))
 
-	intVector := Vector[int]{1,2,3}
+	intVector := Vector[int]{1, 2, 3}
 	intVector.Push(4)
 	fmt.Println("intVector: ", intVector)
 
@@ -102,21 +123,21 @@ func main() {
 	// PrintTypeSet[ItemTypeSet](itemTypeSet)
 
 	// Test filter by define input function
-	sourceFilter := []int{1,2,3,4,5,6,7,8}
+	sourceFilter := []int{1, 2, 3, 4, 5, 6, 7, 8}
 	outFilter := Filter(sourceFilter, func(item int) bool {
-		return item % 2 == 0 
+		return item%2 == 0
 	})
 	fmt.Println("OutFilter: ", outFilter)
 
 	// Test mapping
-	sourceMap := []int{1,2,3,4,5,6,7,8}
+	sourceMap := []int{1, 2, 3, 4, 5, 6, 7, 8}
 	outMap := Map(sourceMap, func(item int) string {
 		return fmt.Sprintf("%d-item", item)
 	})
 	fmt.Println("OutMap: ", outMap)
 
 	// Test find
-	sourceFind := []int{1,2,3,4,5,6,7,8}
+	sourceFind := []int{1, 2, 3, 4, 5, 6, 7, 8}
 	matchedItem, err := Find(sourceFind, func(item int) bool {
 		return item == 4
 	})
@@ -130,6 +151,12 @@ func main() {
 	// Use unterlying type of string
 	PrintAnyString("Print AnyString: string")
 	PrintAnyString(MyString("Print AnyString: MyString"))
+
+	// Use union contraint types
+	fmt.Println("SumUnionSignedNumber :", SumUnionSignedNumber(uint(1), uint(2)))
+	// Follow line failed
+	// fmt.Println("SumUnionSignedNumber :", SumUnionSignedNumber(uint(1), uint(-2)))
+	PrintMaxUnionSignedNumber(uint(1), uint(2))
 }
 
 func Print[T any](s []T) {
@@ -137,4 +164,3 @@ func Print[T any](s []T) {
 		fmt.Println(v)
 	}
 }
-
