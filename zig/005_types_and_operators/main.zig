@@ -24,5 +24,19 @@ pub fn main() !void {
     const value1: ?u32 = null;
     const value2: u32 = 222;
     std.debug.print("value1 orelse value2: {}\n", .{value1 orelse value2});
-    // std.debug.print("value1.? : {}\n", .{value1.?}); // value1 is compiler known value that is null
+    // std.debug.print("value1.? : {}\n", .{value1.?}); // value1 is compiler known value that is null and throw error unreachable
+
+    const value3: anyerror!u32 = error.Broken;
+    std.debug.print("value3 catch 1234: {}\n", .{value3 catch 1234});
+    std.debug.print("value3 catch noreturn: {}\n", .{value3 catch noreturn});
+    std.debug.print("value3 catch noreturn: {}\n", .{value3 catch |err| err});
+
+    const array1 = [_]u32{ 1, 2 };
+    const array2 = [_]u32{ 3, 4 };
+    std.debug.print("array1 ++ array2: {any}\n", .{array1 ++ array2});
+
+    std.debug.print("\"ab\" ** 3: {s}\n", .{"ab" ** 3});
+    std.debug.print("array1 ** 3: {any}\n", .{array1 ** 3});
+
+    std.debug.print("1!2: {}\n", .{1!2});
 }
