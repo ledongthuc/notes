@@ -19,3 +19,13 @@ Need more research:
 # Operators
  - orelse implementation
  - +%, +| implementation
+
+# List
+ - How array in memory, compiler-known size
+ - How vector in memory
+ - How slice in memory
+
+# Pointer
+ - How a single-pointer store/work
+ - How a multiple pointer store/work
+ - How a single-pointer that point to array work
