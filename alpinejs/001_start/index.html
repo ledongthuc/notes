@@ -1,0 +1,14 @@
+<html>
+<head>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body>
+    <h1 x-data="{ message: 'I ❤️ Alpine' }" x-text="message"></h1>
+    <div x-data="{ open: false }">
+        <div x-data="{ label: 'Content:' }">
+            <span x-text="label" @click="open = ! open"></span>
+            <span x-show="open">It will be hidden</span>
+        </div>
+    </div>
+</body>
+</html>
