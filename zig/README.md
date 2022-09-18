@@ -34,3 +34,6 @@ Need more research:
  - Padding strategy code
  - Packed struct
  - How tupes design
+
+# Enum
+ - Enum in function scoped can't define methods with self same type
