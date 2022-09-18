@@ -29,3 +29,8 @@ Need more research:
  - How a single-pointer store/work
  - How a multiple pointer store/work
  - How a single-pointer that point to array work
+
+# Struct
+ - Padding strategy code
+ - Packed struct
+ - How tupes design
