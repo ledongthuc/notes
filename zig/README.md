@@ -37,3 +37,6 @@ Need more research:
 
 # Enum
  - Enum in function scoped can't define methods with self same type
+
+# Union
+ - How data is stored and handle in memory (bare & packed

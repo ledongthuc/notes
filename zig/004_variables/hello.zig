@@ -1,30 +1,22 @@
 const std = @import("std");
 const print = std.debug.print;
-
-const N: i32 = 4;
+const expect = @import("std").testing.expect;
 
 pub fn main() !void {
-    var a: [N][N]i32 = undefined;
-    var b: [N][N]i32 = undefined;
+    var y: i32 = 123;
+    const x = blk: {
+        y += 1;
+        break :blk y;
+    };
+    try expect(x == 124);
+    try expect(y == 124);
 
-    var row: usize = 5;
-    var col: usize = 1;
-    while (row > 0) {
-        b[row][col] = 1; // Error because index outbound
-        if (row > 0) {
-            row -= 1;
-        }
-        if (col > 0) {
-            col -= 1;
-        }
+    {
+        const pi = 3.14;
+        _ = pi;
     }
-
-    var i: usize = 0;
-    while (i < N) : (i += 1) {
-        var j: usize = 0;
-        while (j < N) : (j += 1) {
-            print("{} ", .{a[i][j]});
-        }
-        print("\n", .{});
+    {
+        var pi: bool = true;
+        _ = pi;
     }
 }
