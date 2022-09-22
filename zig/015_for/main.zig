@@ -43,13 +43,45 @@ test "else for" {
     var val: i32 = for (items) |item| {
         if (item != null) {
             total += item orelse 0;
-        } else {
-            break -1;
+            continue;
         }
+        break -1;
     } else blk: {
         break :blk 999;
     };
 
     try expectEqual(@intCast(i32, 7), total);
     try expectEqual(@intCast(i32, -1), val);
+
+    var total2: i32 = 0;
+    var val2: i32 = for (items) |item| {
+        if (item != null) {
+            total2 += item orelse 0;
+        }
+    } else blk: {
+        break :blk 999;
+    };
+    try expectEqual(@intCast(i32, 12), total2);
+    try expectEqual(@intCast(i32, 999), val2);
+}
+
+test "inline for loop" {
+    const nums = [_]i32{ 2, 4, 6 };
+    var sum: usize = 0;
+    comptime {
+        inline for (nums) |i| {
+            const T = switch (i) {
+                2 => f32,
+                4 => i8,
+                6 => bool,
+                else => unreachable,
+            };
+            sum += typeNameLength(T);
+        }
+    }
+    try expect(sum == 9);
+}
+
+fn typeNameLength(comptime T: type) usize {
+    return @typeName(T).len;
 }
