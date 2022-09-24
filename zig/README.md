@@ -40,3 +40,7 @@ Need more research:
 
 # Union
  - How data is stored and handle in memory (bare & packed
+
+# Stuffs
+ - What is callconv and how callconv works
+ - How @setCold do in compile step/runtime step
