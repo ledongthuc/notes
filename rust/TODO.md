@@ -1,0 +1,2 @@
+ - &, *, Option, ref
+ - Memory presentation of String, str, Vec, slice
