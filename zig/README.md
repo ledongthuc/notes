@@ -44,3 +44,11 @@ Need more research:
 # Stuffs
  - What is callconv and how callconv works
  - How @setCold do in compile step/runtime step
+
+# Links:
+ - https://rischmann.fr/blog/virtual-tables-with-zig-sqlite
+ - https://zig.news/kprotty/building-a-tiny-mutex-537k
+ - https://www.scattered-thoughts.net/writing/how-safe-is-zig/
+
+ - https://www.youtube.com/watch?v=Gv2I7qTux7g&feature=youtu.be&ab_channel=ChariotSolutions
+ - https://vimeo.com/showcase/7818787/video/481466766
