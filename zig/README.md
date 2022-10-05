@@ -29,6 +29,9 @@ Need more research:
  - How a single-pointer store/work
  - How a multiple pointer store/work
  - How a single-pointer that point to array work
+ - Pointer to array
+ - Pointer to slice
+ - Null-terminated pointer
 
 # Struct
  - Padding strategy code
@@ -50,5 +53,6 @@ Need more research:
  - https://zig.news/kprotty/building-a-tiny-mutex-537k
  - https://www.scattered-thoughts.net/writing/how-safe-is-zig/
 
+# Videos
  - https://www.youtube.com/watch?v=Gv2I7qTux7g&feature=youtu.be&ab_channel=ChariotSolutions
  - https://vimeo.com/showcase/7818787/video/481466766
