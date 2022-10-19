@@ -1,3 +1,5 @@
+#![feature(vec_into_raw_parts)]
+
 #[cfg(test)]
 mod tests {
     use core::ptr;
@@ -37,7 +39,7 @@ mod tests {
 
     #[test]
     fn vec_from_raw_parts() {
-        let layout = Layout::array::<u16>(5);
+        let layout = Layout::array::<u16>(6);
         let ptr = unsafe { alloc(layout.unwrap()) };
         assert!(!ptr.is_null());
         let ptr = ptr as *mut u16;
@@ -48,11 +50,16 @@ mod tests {
         unsafe { ptr::write(ptr.add(4), 11) };
         unsafe { ptr::write(ptr.add(5), 10) };
 
-        let vec = unsafe { Vec::from_raw_parts(ptr, 5, 5) };
+        let vec = unsafe { Vec::from_raw_parts(ptr, 5, 6) };
         assert_eq!(vec[0], 15);
         assert_eq!(vec[1], 14);
         assert_eq!(vec[2], 13);
         assert_eq!(vec[3], 12);
         assert_eq!(vec[4], 11);
+
+        let (ptr2, len2, cap2) = vec.into_raw_parts();
+        assert_eq!(ptr, ptr2);
+        assert_eq!(5, len2);
+        assert_eq!(6, cap2);
     }
 }
