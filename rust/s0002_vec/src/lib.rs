@@ -62,4 +62,19 @@ mod tests {
         assert_eq!(5, len2);
         assert_eq!(6, cap2);
     }
+
+    #[test]
+    fn vec_reverse_and_reverse_exact() {
+        let mut vec = vec![1,2,3,4,5];
+        assert_eq!(5, vec.capacity());
+        assert_eq!(5, vec.len());
+        vec.reserve(3);
+        assert_eq!(vec.capacity(), 10);
+
+        let mut vec = vec![1,2,3,4,5];
+        assert_eq!(5, vec.len());
+        vec.reserve_exact(3);
+        assert_eq!(vec.capacity(), 8);
+    }
 }
+
