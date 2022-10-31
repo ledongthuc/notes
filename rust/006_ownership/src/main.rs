@@ -35,7 +35,11 @@ fn main() {
     let fi = 10;
     makes_copy(fi);
     println!("fI (in function call): {}", fi);
+
+    let returned_ownership = return_ownership();
+    assert_eq!(String::from("Test"), returned_ownership);
 }
+
 
 fn takes_ownership(some_string: String) {
     println!("fS (in function call): {}", some_string);
@@ -48,4 +52,8 @@ fn takes_and_gives_back(some_string: String) -> String {
 
 fn makes_copy(some_integer: i32) {
     println!("fI (in function call): {}", some_integer);
+}
+
+fn return_ownership() -> String {
+    String::from("Test")
 }

@@ -64,7 +64,7 @@ mod tests {
     }
 
     #[test]
-    fn vec_reverse_and_reverse_exact() {
+    fn vec_reserve_and_reserve_exact() {
         let mut vec = vec![1,2,3,4,5];
         assert_eq!(5, vec.capacity());
         assert_eq!(5, vec.len());
@@ -76,5 +76,90 @@ mod tests {
         vec.reserve_exact(3);
         assert_eq!(vec.capacity(), 8);
     }
-}
 
+    #[test]
+    fn vec_shrink_to_fit() {
+        let mut vec = Vec::with_capacity(10);
+        vec.extend([1,2,3]);
+        vec.shrink_to_fit();
+        assert_eq!(vec.capacity(), 3);
+    }
+
+    #[test]
+    fn vec_shrink_to() {
+        let mut vec = Vec::with_capacity(10);
+        vec.extend([1,2,3]);
+
+        vec.shrink_to(4);
+        assert_eq!(vec.capacity(), 4);
+
+        vec.shrink_to(1);
+        assert_eq!(vec.capacity(), 3);
+    }
+
+    #[test]
+    fn vec_into_boxed_slice() {
+        let mut vec = Vec::with_capacity(10);
+        vec.extend([1,2,3]);
+        assert_eq!(10, vec.capacity());
+
+        let slice = vec.into_boxed_slice();
+        assert_eq!(3, slice.into_vec().capacity())
+    }
+
+    #[test]
+    fn vec_truncate() {
+        let mut vec = vec![1,2,3,4,5,6];
+        vec.truncate(3);
+        assert_eq!(vec![1,2,3], vec);
+
+        let ptr = vec.as_ptr();
+        assert_eq!(&1, unsafe { &*ptr as &i32 });
+        assert_eq!(&2, unsafe { &*ptr.add(1) as &i32 });
+        assert_eq!(&3, unsafe { &*ptr.add(2) as &i32 });
+        assert_eq!(&4, unsafe { &*ptr.add(3) as &i32 }); // unsafe read, unexpected area
+        assert_eq!(&5, unsafe { &*ptr.add(4) as &i32 }); // unsafe read, unexpected area
+        assert_eq!(&6, unsafe { &*ptr.add(5) as &i32 }); // unsafe read, unexpected area
+    }
+
+    #[test]
+    fn vec_remove() {
+        let mut vec = vec![1,2,3,4,5,6];
+
+        let removed_item = vec.swap_remove(3);
+        assert_eq!(4, removed_item);
+
+        assert_eq!(vec![1,2,3,6,5], vec);
+    }
+
+    #[test]
+    fn vec_swap_remove() {
+        let mut vec = vec![1,2,3,4,5,6];
+
+        let removed_item = vec.remove(3);
+        assert_eq!(4, removed_item);
+
+        assert_eq!(vec![1,2,3,5,6], vec);
+    }
+
+    #[test]
+    fn vec_retain() {
+        let mut vec = vec![1,2,3,4,5,6];
+        vec.retain(|x| x % 2 == 0);
+        assert_eq!(vec![2,4,6], vec);
+    }
+
+    #[test]
+    fn vec_dedup_by_key() {
+        let mut vec = vec![10,11,12,22,23,30,40];
+        vec.dedup_by_key(|x| *x/10);
+        assert_eq!(vec![10, 22, 30, 40], vec);
+    }
+
+    #[test]
+    fn vec_dedup_by() {
+        let mut vec = vec![10,11,12,22,23,30,40];
+        vec.dedup_by(|x, previous| *x/10 == *previous/10);
+        assert_eq!(vec![10, 22, 30, 40], vec);
+    }
+}
