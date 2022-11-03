@@ -37,6 +37,11 @@ fn main() {
 
     let s7 = no_dangle();
     println!("s7: {}", s7);
+    
+    let s8 = String::from("Test");
+    let s8_ref = &s8;
+    let s8_ref_deref = *s8_ref;
+    println!("{s8_ref_deref}, {s8_ref}, {s8_ref_deref}");
 }
 
 fn calculate_length(s: &String) -> usize {
