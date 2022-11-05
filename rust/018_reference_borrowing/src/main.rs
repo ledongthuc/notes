@@ -1,7 +1,11 @@
+use std::any::type_name;
+
 fn main() {
     let s1 = String::from("Test");
-    let len = calculate_length(&s1);
+    let s1_ref = &s1;
+    let len = calculate_length(s1_ref);
     println!("The length of {} is {}", s1, len);
+    println!("s1_ref: {}", s1_ref); // s1_ref is still avaiable
 
     // Following codes won't work because s1 is a immutable reference 
     // change_str(&s1);
@@ -37,11 +41,17 @@ fn main() {
 
     let s7 = no_dangle();
     println!("s7: {}", s7);
-    
+
     let s8 = String::from("Test");
     let s8_ref = &s8;
-    let s8_ref_deref = *s8_ref;
-    println!("{s8_ref_deref}, {s8_ref}, {s8_ref_deref}");
+    let s8_ref_deref = &**s8_ref;
+    _ = (*s8_ref).clone();
+
+    println!("{}: {s8_ref_deref}, {}: {s8_ref}, {}: {s8_ref_deref}, {}: {}", type_of(s8.clone()), type_of(s8_ref), type_of(s8_ref_deref), type_of(&*s8_ref), &*s8_ref);
+}
+
+fn type_of<T>(_: T) -> &'static str {
+    type_name::<T>()
 }
 
 fn calculate_length(s: &String) -> usize {

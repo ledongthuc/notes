@@ -58,6 +58,13 @@ fn main() -> Result<(), Box<dyn Error>> {
     println!("f7_content: {:?}", f7_content);
 
     let f8 = File::open("hello8.txt")?;
+    _ = f8;
+
+    let f9 = File::open("not real");
+    let f9_err = f9.unwrap();
+    _ = f9_err;
+    // f9.unwrap(); // moved f9 can't move again
+
     Ok(())
 }
 
