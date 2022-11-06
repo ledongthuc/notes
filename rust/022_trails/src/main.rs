@@ -1,3 +1,5 @@
+mod associated_types;
+
 pub trait Summary {
     fn summarize(&self) -> String;
     fn notify(item: &impl Summary) {
@@ -34,9 +36,7 @@ impl Summary for Tweet {
 fn main() {
     let tweet = Tweet {
         username: String::from("horse_ebooks"),
-        content: String::from(
-            "of course, as you probably already know, people",
-        ),
+        content: String::from("of course, as you probably already know, people"),
         reply: false,
         retweet: false,
     };
@@ -53,30 +53,36 @@ pub trait SharedTrait {
 
 pub struct Struct1 {}
 impl SharedTrait for Struct1 {
-     fn need_to_implement(&self) -> &str {
+    fn need_to_implement(&self) -> &str {
         "This method is implemented by struct 1"
     }
 }
 
 pub struct Struct2 {}
 impl SharedTrait for Struct2 {
-     fn need_to_implement(&self) -> &str {
+    fn need_to_implement(&self) -> &str {
         "This method is implemented by struct 2"
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::{Struct1, Struct2, SharedTrait};
+    use crate::{SharedTrait, Struct1, Struct2};
 
     #[test]
     fn share_traits_methods() {
-        let s1 = Struct1{};
+        let s1 = Struct1 {};
         // assert_eq!("Method is implemented in traits", s1.default_implementation());
-        assert_eq!("This method is implemented by struct 1", s1.need_to_implement());
+        assert_eq!(
+            "This method is implemented by struct 1",
+            s1.need_to_implement()
+        );
 
-        let s2 = Struct2{};
+        let s2 = Struct2 {};
         // assert_eq!("Method is implemented in traits", s2.default_implementation());
-        assert_eq!("This method is implemented by struct 2", s2.need_to_implement());
+        assert_eq!(
+            "This method is implemented by struct 2",
+            s2.need_to_implement()
+        );
     }
 }
