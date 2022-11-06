@@ -10,7 +10,7 @@ mod tests {
     }
 
     struct MyBoxer<'t> {
-        internal: &'t i32
+        internal: &'t i32,
     }
 
     impl<'t> Boxer for MyBoxer<'t> {
@@ -26,15 +26,12 @@ mod tests {
         let val: i32 = 1;
         let ref_val;
         {
-            let b = MyBoxer{
-                internal: &val,
-            };
+            let b = MyBoxer { internal: &val };
             ref_val = b.unbox();
             assert_eq!(&1, ref_val);
         }
         // assert_eq!(&1, ref_val); //Failed because ref_val is bind to lifetime of MyBoxer
     }
-
 
     //***************
     // GAT example type
@@ -59,7 +56,7 @@ mod tests {
         let val: i32 = 1;
         let b_val;
         {
-            let b = MyBoxer2{};
+            let b = MyBoxer2 {};
             b_val = b.make_box(val);
             assert_eq!(Box::new(1), b_val);
         }
@@ -72,22 +69,22 @@ mod tests {
     trait Boxer3 {
         type Item<const N: usize>;
 
-        fn make_empty_array<const N: usize>(&self) -> Self::Item<{N}>;
+        fn make_empty_array<const N: usize>(&self) -> Self::Item<{ N }>;
     }
 
     struct MyBoxer3 {}
 
     impl Boxer3 for MyBoxer3 {
-        type Item<const N:usize> = [i32; N];
+        type Item<const N: usize> = [i32; N];
 
-        fn make_empty_array<const N: usize>(&self) -> Self::Item<{N}> {
+        fn make_empty_array<const N: usize>(&self) -> Self::Item<{ N }> {
             [i32::default(); N]
         }
     }
 
     #[test]
     fn gat_const() {
-        let b = MyBoxer3{};
+        let b = MyBoxer3 {};
         let val: [i32; 5] = b.make_empty_array();
         assert_eq!(5, val.len());
     }
