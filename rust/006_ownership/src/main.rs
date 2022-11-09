@@ -38,6 +38,20 @@ fn main() {
 
     let returned_ownership = return_ownership();
     assert_eq!(String::from("Test"), returned_ownership);
+
+    struct Struct1 {
+        name: String,
+        nick_name: String,
+    }
+    let struct1 = Struct1{
+        name: String::from("Test"),
+        nick_name: String::from("Test2"),
+    };
+    let get_string = struct1.name;
+    let get_string2 = struct1.nick_name;
+    // println!("{}", struct1.name); // failed because name is moved
+    _ = get_string;
+    _ = get_string2;
 }
 
 

@@ -1,3 +1,5 @@
+mod let_else;
+
 fn main() {
     let number = 3;
     if number < 5 {
@@ -18,10 +20,10 @@ fn main() {
         loop {
             println!("remaining = {}", remaining);
             if remaining == 9 {
-                break
+                break;
             }
             if count == 2 {
-                break 'outer
+                break 'outer;
             }
             remaining -= 1;
         }
