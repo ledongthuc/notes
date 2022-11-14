@@ -1,2 +1,4 @@
  - &, *, Option, ref
  - Memory presentation of String, str, Vec, slice
+ - Rust vtable of trait object
+ - RC/Arc detail code
