@@ -1,4 +1,5 @@
 mod associated_types;
+mod r#dyn;
 
 pub trait Summary {
     fn summarize(&self) -> String;
