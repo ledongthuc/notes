@@ -23,8 +23,40 @@ mod tests {
 
     #[test]
     fn try_dyn() {
-        let s1 = Struct1{};
+        let s1 = Struct1 {};
         let s = str_getter(&s1);
         assert_eq!(s, "Struct1")
+    }
+
+    trait Food {
+        fn get_name(&self) -> &str;
+    }
+
+    struct Meat {}
+    impl Food for Meat {
+        fn get_name(&self) -> &str {
+            "Meat"
+        }
+    }
+
+    struct Vegie {}
+    impl Food for Vegie {
+        fn get_name(&self) -> &str {
+            "Vegie"
+        }
+    }
+
+    struct Meal {
+        foods: Vec<Box<dyn Food>>,
+    }
+
+    #[test]
+    fn test_vec() {
+        let m = Meal {
+            foods: vec![Box::new(Meat {}), Box::new(Vegie {})],
+        };
+        assert_eq!(2, m.foods.len());
+        assert_eq!("Meat", m.foods.first().unwrap().get_name());
+        assert_eq!("Vegie", m.foods.get(1).unwrap().get_name());
     }
 }
