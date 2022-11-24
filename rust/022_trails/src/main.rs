@@ -1,4 +1,6 @@
 mod associated_types;
+mod default;
+mod impl_for_type;
 mod r#dyn;
 
 pub trait Summary {
