@@ -1,0 +1,27 @@
+package main
+
+type MonkeysParser Peg {
+}
+
+monkeys           <- monkey (delimiters monkey)*
+monkey            <- monkey_identifier delimiters starting_items delimiters operation delimiter test_cases
+monkey_identifier <- "Monkey " digits ":"
+
+delimiter   <- "\n"+
+delimiters  <- delimiter+
+
+items           <- digits (", " digits)*
+starting_items  <- "  Starting items: " items
+
+operation_op          <- "*" / "+"
+operand               <- digits / "old"
+operation_expression  <- operand " " operation_op " " operand
+operation             <- "  Operation: new = " operation_expression
+
+divisible         <- digits
+test_true_case    <- "    If true: throw to monkey " digit
+test_false_case   <- "    If false: throw to monkey " digit
+test_cases        <- "  Test: divisible by " divisible delimiter test_true_case delimiter test_false_case
+
+digit   <- [0-9]
+digits  <- digit+
