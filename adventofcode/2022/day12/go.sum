@@ -1,0 +1,4 @@
+github.com/ledongthuc/goterators v1.0.3-0.20220824204537-ecc4346deb1b h1:h0NDbzQRZBqg2NRV/FlTfFeBziKAm8XsWikEccRp4d0=
+github.com/ledongthuc/goterators v1.0.3-0.20220824204537-ecc4346deb1b/go.mod h1:sgoACiiakuAb2rt/QokY+z+Bxmym816FgDi7nTAN2eo=
+golang.org/x/exp v0.0.0-20220314205449-43aec2f8a4e7 h1:jynE66seADJbyWMUdeOyVTvPtBZt7L6LJHupGwxPZRM=
+golang.org/x/exp v0.0.0-20220314205449-43aec2f8a4e7/go.mod h1:lgLbSvA5ygNOMpwM/9anMpWVlVJ7Z+cHWq/eFuinpGE=
