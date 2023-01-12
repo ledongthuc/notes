@@ -1,0 +1,21 @@
+syntax = "proto3";
+package pro;
+
+option go_package = "app/pro";
+
+message Student {
+  // @gotags: jsonschema:"title=Identify,description=ID of user,example=1,example=2"
+  int64 id = 1;
+
+  // @gotags: jsonschema:"title=Name,description=Student name"
+  string name = 2;
+
+  // @gotags: jsonschema:"enum=Beginer,enum=Mid,enum=Advanced"
+  string level = 3;
+
+  // @gotags: jsonschema:"pattern=^C[0-9]+$"
+  string code = 4;
+
+  // @gotags: jsonschema:"minimum=1,maximum=3"
+  optional float height = 5;
+}

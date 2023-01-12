@@ -1,0 +1,10 @@
+syntax = "proto3";
+import "student.proto";
+package pro;
+option go_package = "app/pro";
+
+message Class {
+  int64 id = 1;
+  string name = 2;
+  repeated Student students = 3;
+}
