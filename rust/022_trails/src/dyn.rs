@@ -25,7 +25,12 @@ mod tests {
     fn try_dyn() {
         let s1 = Struct1 {};
         let s = str_getter(&s1);
-        assert_eq!(s, "Struct1")
+        assert_eq!(s, "Struct1");
+
+        let s2 = Struct2 {};
+        let s = str_getter(&s2);
+        assert_eq!(s, "Struct2");
+
     }
 
     trait Food {
