@@ -13,7 +13,7 @@ mod tests {
     #[test]
     fn test_trait_for_type_str() {
         let name = "hello world.This is the text";
-        assert_eq!(28.0/2.0, name.half_len())
+        assert_eq!(28.0 / 2.0, name.half_len())
     }
 
     trait HelloMe {
@@ -31,6 +31,6 @@ mod tests {
     #[test]
     fn test_trait_for_trait() {
         let name = "hello world.This is the text";
-        assert_eq!(28.0/2.0, name.half_len())
+        assert_eq!(28.0 / 2.0, name.half_len())
     }
 }

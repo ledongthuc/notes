@@ -1,0 +1,20 @@
+[package]
+name = "l0001_bevy"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bevy = "0.9.1"
+
+[workspace]
+resolver = "2"
+
+[[example]]
+name = "001_quickstart"
+path = "001_quickstart/main.rs"
+
+[[example]]
+name = "002_3d_shape"
+path = "002_3d_shape/main.rs"

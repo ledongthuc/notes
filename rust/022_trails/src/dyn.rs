@@ -30,7 +30,6 @@ mod tests {
         let s2 = Struct2 {};
         let s = str_getter(&s2);
         assert_eq!(s, "Struct2");
-
     }
 
     trait Food {

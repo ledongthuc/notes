@@ -18,7 +18,7 @@ mod tests {
 
     #[test]
     fn test_vec() {
-        let s = S{};
+        let s = S {};
         assert_eq!("MR.S", s.get_me());
     }
 }

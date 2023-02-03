@@ -1,7 +1,14 @@
 mod associated_types;
 mod default;
-mod impl_for_type;
 mod r#dyn;
+mod generic_traits;
+mod impl_for_traits;
+mod impl_for_type;
+mod self_in_traits;
+mod sub_traits;
+mod impl_trait;
+mod type_associated_function_traits;
+mod associated_const;
 
 pub trait Summary {
     fn summarize(&self) -> String;
