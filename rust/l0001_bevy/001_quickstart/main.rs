@@ -12,6 +12,9 @@ fn main() {
 struct Person;
 
 #[derive(Component)]
+struct Rect;
+
+#[derive(Component)]
 struct Name(String);
 
 fn add_people(mut commands: Commands) {
@@ -28,6 +31,18 @@ fn hello_people(time: Res<Time>, mut timer: ResMut<GreetTimer>, query: Query<&Na
         for name in query.iter() {
             println!("hello {}!", name.0)
         }
+    }
+}
+
+fn move_rect (
+    keyboard: Res<Input<KeyCode>>,
+    mut rect : Query<(&mut Transform,), With<Rect>>,
+) {
+    if !keyboard.just_pressed(KeyCode::Up) { return; }
+
+    if let Ok(rect) = rect.get_single_mut() {
+        let (mut player_position,) = rect;
+        player_position.translation.x += 1.0;
     }
 }
 
