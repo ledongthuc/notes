@@ -134,4 +134,36 @@ mod tests {
             assert_eq!(value, &expected[i]);
         }
     }
+
+    #[test]
+    fn test_skip() {
+        let v : Vec<i32> = (0..10).skip(5).collect();
+
+        let expected : Vec<_> = vec![5,6,7,8,9];
+        assert_eq!(v.len(), expected.len());
+        for (i, value) in v.iter().enumerate() {
+            assert_eq!(value, &expected[i]);
+        }
+    }
+
+    #[test]
+    fn test_skip_while() {
+        let v : Vec<i32> = (0..10).skip_while(|i| *i < 5).collect();
+
+        let expected : Vec<_> = vec![5,6,7,8,9];
+        assert_eq!(v.len(), expected.len());
+        for (i, value) in v.iter().enumerate() {
+            assert_eq!(value, &expected[i]);
+        }
+    }
+
+    #[test]
+    fn test_peek() {
+        let mut v = (5..10).skip(3).peekable();
+        assert_eq!(v.peek(), Some(&8));
+
+        let mut v = (5..10).skip(5).peekable();
+        assert_eq!(v.peek(), None);
+
+    }
 }
