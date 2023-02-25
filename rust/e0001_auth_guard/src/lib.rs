@@ -8,17 +8,19 @@ pub struct Request {
     data: String,
 }
 
+pub struct FlowRespMsg {
+    response_data: String,
+}
+
 /** SYNC func **/
-pub fn auth_guard<F>(request_msg: Request, flow_run: F)
+pub fn auth_guard<F>(request_msg: Request, flow_run: F) -> Result<FlowRespMsg, &'static str>
 where
-    F: Fn(Request),
+    F: Fn(Request) -> FlowRespMsg,
 {
     if auth_req(&request_msg) {
-        flow_run(request_msg);
-        return;
+        return Ok(flow_run(request_msg));
     }
-
-    println!("Auth failed")
+    Err("Auth failed")
 }
 
 fn auth_req(request_msg: &Request) -> bool {
@@ -26,17 +28,15 @@ fn auth_req(request_msg: &Request) -> bool {
 }
 
 /** ASYNC func **/
-pub async fn auth_guard_async<F, Fut>(request_msg: Request, flow_run: F)
+pub async fn auth_guard_async<F, Fut>(request_msg: Request, flow_run: F) -> Result<FlowRespMsg, &'static str>
 where
     F: Fn(Request) -> Fut,
-    Fut: Future,
+    Fut: Future<Output = FlowRespMsg>,
 {
     if auth_req_async(&request_msg).await {
-        flow_run(request_msg).await;
-        return;
+        return Ok(flow_run(request_msg).await);
     }
-
-    println!("Auth failed")
+    Err("Auth failed")
 }
 
 async fn auth_req_async(request_msg: &Request) -> bool {
@@ -51,33 +51,37 @@ mod tests {
     fn test_auth_guard() {
         let request_msg1 = Request {
             username: "admin".to_string(),
-            password: "admin".to_string(),
-            data: "{}".to_string(),
+            password: "password".to_string(),
+            data: "Successfull".to_string(),
         };
-        auth_guard(request_msg1, |r| println!("Flow run 1: data: {}", r.data));
+        let resp = auth_guard(request_msg1, |r| FlowRespMsg { response_data: r.data});
+        assert_eq!(resp.unwrap().response_data, "Successfull");
 
         let request_msg2 = Request {
-            username: "admin".to_string(),
-            password: "admin".to_string(),
-            data: "{}".to_string(),
+            username: "invalid username".to_string(),
+            password: "invalid password".to_string(),
+            data: "Failed".to_string(),
         };
-        auth_guard(request_msg2, |r| println!("Flow run 2: data: {}", r.data));
+        let resp = auth_guard(request_msg2, |r| FlowRespMsg { response_data: r.data});
+        assert!(resp.is_err());
     }
 
-    #[test]
-    fn test_auth_guard_async() {
+    #[actix_rt::test]
+    async fn test_auth_guard_async() {
         let request_msg1 = Request {
             username: "admin".to_string(),
-            password: "admin".to_string(),
-            data: "{}".to_string(),
+            password: "password".to_string(),
+            data: "Successfull".to_string(),
         };
-        auth_guard_async(request_msg1, async move |r| println!("Flow run 1: data: {}", r.data));
+        let resp = auth_guard(request_msg1, |r| FlowRespMsg { response_data: r.data});
+        assert_eq!(resp.unwrap().response_data, "Successfull");
 
-        let request_msg2 = Request {
-            username: "admin".to_string(),
-            password: "admin".to_string(),
-            data: "{}".to_string(),
+        let request_msg1 = Request {
+            username: "invalid username".to_string(),
+            password: "invalid password".to_string(),
+            data: "Failed".to_string(),
         };
-        auth_guard_async(request_msg2, async move |r| println!("Flow run 2: data: {}", r.data));
+        let resp = auth_guard(request_msg1, |r| FlowRespMsg { response_data: r.data});
+        assert!(resp.is_err());
     }
 }
