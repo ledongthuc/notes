@@ -13,11 +13,11 @@ pub struct FlowRespMsg {
 }
 
 /** SYNC func **/
-pub fn auth_guard<F>(request_msg: Request, flow_run: F) -> Result<FlowRespMsg, &'static str>
+pub fn auth_guard<F>(request_msg: &Request, flow_run: F) -> Result<FlowRespMsg, &'static str>
 where
-    F: Fn(Request) -> FlowRespMsg,
+    F: Fn(&Request) -> FlowRespMsg,
 {
-    if auth_req(&request_msg) {
+    if auth_req(request_msg) {
         return Ok(flow_run(request_msg));
     }
     Err("Auth failed")
@@ -28,7 +28,10 @@ fn auth_req(request_msg: &Request) -> bool {
 }
 
 /** ASYNC func **/
-pub async fn auth_guard_async<F, Fut>(request_msg: Request, flow_run: F) -> Result<FlowRespMsg, &'static str>
+pub async fn auth_guard_async<F, Fut>(
+    request_msg: Request,
+    flow_run: F,
+) -> Result<FlowRespMsg, &'static str>
 where
     F: Fn(Request) -> Fut,
     Fut: Future<Output = FlowRespMsg>,
@@ -54,7 +57,9 @@ mod tests {
             password: "password".to_string(),
             data: "Successfull".to_string(),
         };
-        let resp = auth_guard(request_msg1, |r| FlowRespMsg { response_data: r.data});
+        let resp = auth_guard(&request_msg1, |r| FlowRespMsg {
+            response_data: r.data.clone(),
+        });
         assert_eq!(resp.unwrap().response_data, "Successfull");
 
         let request_msg2 = Request {
@@ -62,7 +67,9 @@ mod tests {
             password: "invalid password".to_string(),
             data: "Failed".to_string(),
         };
-        let resp = auth_guard(request_msg2, |r| FlowRespMsg { response_data: r.data});
+        let resp = auth_guard(&request_msg2, |r| FlowRespMsg {
+            response_data: r.data.clone(),
+        });
         assert!(resp.is_err());
     }
 
@@ -73,7 +80,10 @@ mod tests {
             password: "password".to_string(),
             data: "Successfull".to_string(),
         };
-        let resp = auth_guard(request_msg1, |r| FlowRespMsg { response_data: r.data});
+        let resp = auth_guard_async(request_msg1, async move |r| FlowRespMsg {
+            response_data: r.data,
+        })
+        .await;
         assert_eq!(resp.unwrap().response_data, "Successfull");
 
         let request_msg1 = Request {
@@ -81,7 +91,10 @@ mod tests {
             password: "invalid password".to_string(),
             data: "Failed".to_string(),
         };
-        let resp = auth_guard(request_msg1, |r| FlowRespMsg { response_data: r.data});
+        let resp = auth_guard_async(request_msg1, async move |r| FlowRespMsg {
+            response_data: r.data,
+        })
+        .await;
         assert!(resp.is_err());
     }
 }
