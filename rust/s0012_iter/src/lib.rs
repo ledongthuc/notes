@@ -36,7 +36,7 @@ impl Iterator for ListInter {
 mod tests {
     use std::{
         collections::BTreeMap,
-        iter::{from_fn, successors},
+        iter::{from_fn, successors}, ops::Add,
     };
 
     use super::*;
@@ -252,5 +252,155 @@ mod tests {
         let a3 : Vec<(i32, &str)> = a1.zip(a2).collect();
         assert_eq!(a3[4].0, 4);
         assert_eq!(a3[4].1, "o");
+    }
+
+    #[test]
+    fn test_by_ref() {
+        let a = 0..10;
+        let _b: Vec<i32> = a.take(5).collect();
+        // next row got error because of take() takes ownership of a
+        // assert_eq!(a.len(), 5);
+
+        let mut c = 0..10;
+        let d : Vec<i32> = c.by_ref().take(2).collect();
+        assert_eq!(d.len(), 2);
+        assert_eq!(d[0], 0);
+        assert_eq!(d[1], 1);
+    }
+
+    #[test]
+    fn test_cycle() {
+        let mut a = [0,1].into_iter().cycle();
+        assert_eq!(a.next().unwrap(), 0);
+        assert_eq!(a.next().unwrap(), 1);
+        assert_eq!(a.next().unwrap(), 0);
+        assert_eq!(a.next().unwrap(), 1);
+        assert_eq!(a.next().unwrap(), 0);
+        assert_eq!(a.next().unwrap(), 1);
+        assert_eq!(a.next().unwrap(), 0);
+        assert_eq!(a.next().unwrap(), 1);
+    }
+
+    #[test]
+    fn test_count() {
+        let a = [0,1].into_iter().cycle().take(100).count();
+        assert_eq!(a, 100);
+    }
+
+    #[test]
+    fn test_sum() {
+        let a : i32 = (1..5).into_iter().sum();
+        assert_eq!(a, 10);
+    }
+
+    #[test]
+    fn test_product() {
+        let a : i64 = (1..5).into_iter().inspect(|x| println!("{}", x)).product();
+        assert_eq!(a, 2 * 3 * 4 );
+    }
+
+    #[test]
+    fn test_max() {
+        let a : i64 = [1,6,3,2,1,-1,-7,3].into_iter().max().unwrap();
+        assert_eq!(a, 6);
+
+        let b  = ["this", "is", "my", "friend"].into_iter().max_by(|x, y| x.len().partial_cmp(&y.len()).unwrap() ).unwrap();
+        assert_eq!(b, "friend");
+
+        struct Student {
+            name: String,
+            age: usize,
+            score: usize,
+        }
+        let students = [
+            Student{ name: "A".to_string(), age: 25, score: 7 },
+            Student{ name: "B".to_string(), age: 18, score: 3 },
+            Student{ name: "C".to_string(), age: 20, score: 10 },
+        ];
+        let max_age = students.iter().max_by_key(|s| s.age);
+        assert_eq!(max_age.unwrap().name, "A".to_string());
+        let max_score = students.iter().max_by_key(|s| s.score);
+        assert_eq!(max_score.unwrap().name, "C".to_string());
+    }
+
+    #[test]
+    fn test_min() {
+        let a : i64 = [1,6,3,2,1,-1,-7,3].into_iter().min().unwrap();
+        assert_eq!(a, -7);
+
+        let b  = ["this", "is", "my", "friend"].into_iter().min_by(|x, y| x.len().partial_cmp(&y.len()).unwrap() ).unwrap();
+        assert_eq!(b, "is");
+
+        struct Student {
+            name: String,
+            age: usize,
+            score: usize,
+        }
+        let students = [
+            Student{ name: "A".to_string(), age: 25, score: 7 },
+            Student{ name: "B".to_string(), age: 18, score: 3 },
+            Student{ name: "C".to_string(), age: 20, score: 10 },
+        ];
+        let min_age = students.iter().min_by_key(|s| s.age);
+        assert_eq!(min_age.unwrap().name, "B".to_string());
+        let min_score = students.iter().min_by_key(|s| s.score);
+        assert_eq!(min_score.unwrap().name, "B".to_string());
+    }
+
+    #[test]
+    fn test_any() {
+        let mut a = [1,6,3,2,1,-1,-7,3].iter();
+        assert!(a.any(|i| *i == 3));
+        assert!(!a.any(|i| *i == 4));
+    }
+
+    #[test]
+    fn test_all() {
+        let mut a = [1,6,3,2,1,-1,-7,3].iter();
+        assert!(a.all(|i| *i > -10));
+        assert!(!a.any(|i| i % 2 == 0));
+    }
+
+    #[test]
+    fn test_position() {
+        let mut a = [1,6,3,2,1,1,-7,3].iter();
+        assert_eq!(a.position(|i| *i == 1).unwrap(), 0);
+    }
+
+    #[test]
+    fn test_rposition() {
+        let mut a = [1,6,3,2,1,1,-7,3].iter();
+        assert_eq!(a.rposition(|i| *i == 1).unwrap(), 5);
+    }
+
+    #[test]
+    fn test_fold() {
+        let a = (1..5).into_iter().fold(0, |left, i| left + i);
+        assert_eq!(a, 10);
+    }
+
+    #[test]
+    fn test_rfold() {
+        let a = ["!", "world", "hello"].into_iter().rfold("".to_string(), |right, i| right.add(i));
+        assert_eq!(a, "helloworld!");
+    }
+
+    #[test]
+    fn test_nth() {
+        let mut a = [1,6,3,2,1,1,-7,3].iter();
+        assert_eq!(a.nth(3).unwrap().to_owned(), 2);
+    }
+
+    #[test]
+    fn test_last() {
+        let a = [1,6,3,2,1,1,-7,3].iter();
+        assert_eq!(a.last().unwrap().to_owned(), 3);
+    }
+
+    #[test]
+    fn test_partition() {
+        let (a, b) : (Vec<i32>, Vec<i32>) = (1..10).into_iter().partition(|i| i % 2 == 0);
+        assert_eq!(a, vec![2,4,6,8]);
+        assert_eq!(b, vec![1,3,5,7,9]);
     }
 }
