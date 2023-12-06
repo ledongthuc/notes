@@ -21,3 +21,28 @@ func twoSum(nums []int, target int) []int {
     return []int{0, 0}
 }
 ```
+
+```rust
+use std::collections::HashMap;
+
+impl Solution {
+    pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
+        let mut map = HashMap::with_capacity(nums.len());
+        for (index, num) in nums.iter().enumerate() {
+            let remaining = target - num;
+            
+
+            match map.get(&remaining) {
+                Some(remainingIndex) => {
+                    return vec![index as i32, *remainingIndex as i32];
+                }
+                _ => {
+                    map.insert(num, index);
+                }
+            }
+        }
+
+        return Vec::new()
+    }
+}
+```
