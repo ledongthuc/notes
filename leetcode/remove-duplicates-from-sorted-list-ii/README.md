@@ -48,3 +48,17 @@ func deleteDuplicates(head *ListNode) *ListNode {
 }
 ```
 
+```rust
+impl Solution {
+    pub fn remove_duplicates(nums: &mut Vec<i32>) -> i32 {
+        let mut writingIndex = 0;
+        for readingIndex in 0..nums.len() {
+            if nums[readingIndex] != nums[writingIndex] {
+                nums[readingIndex] = nums[writingIndex];
+                writingIndex+=1;
+            }
+        }
+        (writingIndex + 1) as i32
+    }
+}
+```
