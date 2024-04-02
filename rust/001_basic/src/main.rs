@@ -1,17 +1,16 @@
 fn main() {
     let x = 5;
     println!("The value of x is: {}", x);
-    // it's failed 
+    // it's failed
     // x = 6;
     // println!("The value of x is: {}", x);
-
 
     let mut y = 5;
     println!("The value of y is: {}", y);
     y = 6;
     println!("The value of y is: {}", y);
 
-    const MAX_POINTS: u32 = 100_00;
+    const MAX_POINTS: u32 = 10_000;
     println!("The value of MAX_POINTS is: {}", MAX_POINTS);
 
     let z = 5;
@@ -65,12 +64,12 @@ fn main() {
 
 fn another_function(i: i32) {
     let x = {
-        let z =  10;
+        let z = 10;
         i + z
     };
     println!("Another function. {}", sum(x, -5));
 }
 
-fn sum(a: i32, b:i32) -> i32 {
+fn sum(a: i32, b: i32) -> i32 {
     a + b
 }
