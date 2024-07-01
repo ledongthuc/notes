@@ -30,3 +30,29 @@ func threeConsecutiveOdds(arr []int) bool {
     return false
 }
 ```
+
+```rust
+impl Solution {
+    pub fn three_consecutive_odds(arr: Vec<i32>) -> bool {
+        let mut i = 0;
+        loop {
+            if i + 2 >= arr.len() {
+                return false
+            }
+            if arr[i + 2] % 2 == 0 {
+                i += 3;
+                continue
+            }
+            if arr[i + 1] % 2 == 0 {
+                i += 2;
+                continue
+            }
+            if arr[i] % 2 == 0 {
+                i += 1;
+                continue
+            }
+            return true
+        }
+    }
+}
+```
