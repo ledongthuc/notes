@@ -53,5 +53,8 @@ func main() {
 	}
 
 	answer, err := chains.Run(context.Background(), executor, prompt)
+	if err != nil {
+		panic(err)
+	}
 	fmt.Println(answer)
 }
