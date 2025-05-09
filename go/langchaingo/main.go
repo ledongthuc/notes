@@ -26,7 +26,7 @@ func main() {
 		panic(err)
 	}
 
-	prompt := "Who is Olivia Wilde's boyfriend? What is his current age raised to the 0.23 power?"
+	prompt := "1+1="
 	executor, err := agents.Initialize(
 		llm,
 		agentTools,
