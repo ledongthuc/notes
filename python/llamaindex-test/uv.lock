@@ -267,6 +267,19 @@ wheels = [
 ]
 
 [[package]]
+name = "duckduckgo-search"
+version = "6.4.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "click" },
+    { name = "primp" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/31/3f/c36407a7be9cad84c2f15ec38839a9fbc2ad2f8cc051a9ebfd70cddd813a/duckduckgo_search-6.4.2.tar.gz", hash = "sha256:173c6988cbac1f3ccecc2c645e44e69fc49c4e94c06ee7c09e9dd8ad39d63b0c", size = 33341, upload-time = "2024-12-21T06:02:04.417Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d5/2e/c8bfff437be4d53a0156d75334234e59ba2e8d8fd24b618b1cef15e8e2ee/duckduckgo_search-6.4.2-py3-none-any.whl", hash = "sha256:1e9e64a5379a5330bd99885c053185c9e133eb30f397701fdd6e4f448da1843c", size = 27808, upload-time = "2024-12-21T06:02:01.608Z" },
+]
+
+[[package]]
 name = "filetype"
 version = "1.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -718,6 +731,19 @@ wheels = [
 ]
 
 [[package]]
+name = "llama-index-tools-duckduckgo"
+version = "0.3.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "duckduckgo-search" },
+    { name = "llama-index-core" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fd/14/20eeb8684ebff41e6b32a408d36af32476e63dced621bcfcd56560434648/llama_index_tools_duckduckgo-0.3.0.tar.gz", hash = "sha256:e4996a75c3b1d7d7991e70acef8b0ea390771fd2db3bc47dbd2a23b9f7fa9880", size = 2404, upload-time = "2024-11-18T02:08:38.778Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cb/6c/6bc1ccced740a31b90d111f8a546b08e3b6e0238a57cc830229acf135660/llama_index_tools_duckduckgo-0.3.0-py3-none-any.whl", hash = "sha256:09ca66b7f8288992c022d4f0e719e6b80bcd6374069b03b093ba994c4914915a", size = 2714, upload-time = "2024-11-18T02:08:37.291Z" },
+]
+
+[[package]]
 name = "llama-index-tools-yahoo-finance"
 version = "0.3.0"
 source = { registry = "https://pypi.org/simple" }
@@ -750,6 +776,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "llama-index" },
     { name = "llama-index-llms-ollama" },
+    { name = "llama-index-tools-duckduckgo" },
     { name = "llama-index-tools-yahoo-finance" },
 ]
 
@@ -757,6 +784,7 @@ dependencies = [
 requires-dist = [
     { name = "llama-index", specifier = ">=0.12.37" },
     { name = "llama-index-llms-ollama", specifier = ">=0.6.1" },
+    { name = "llama-index-tools-duckduckgo", specifier = ">=0.3.0" },
     { name = "llama-index-tools-yahoo-finance", specifier = ">=0.3.0" },
 ]
 
@@ -1033,6 +1061,22 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/fe/8b/3c73abc9c759ecd3f1f7ceff6685840859e8070c4d947c93fae71f6a0bf2/platformdirs-4.3.8.tar.gz", hash = "sha256:3d512d96e16bcb959a814c9f348431070822a6496326a4be0911c40b5a74c2bc", size = 21362, upload-time = "2025-05-07T22:47:42.121Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/fe/39/979e8e21520d4e47a0bbe349e2713c0aac6f3d853d0e5b34d76206c439aa/platformdirs-4.3.8-py3-none-any.whl", hash = "sha256:ff7059bb7eb1179e2685604f4aaf157cfd9535242bd23742eadc3c13542139b4", size = 18567, upload-time = "2025-05-07T22:47:40.376Z" },
+]
+
+[[package]]
+name = "primp"
+version = "0.15.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/56/0b/a87556189da4de1fc6360ca1aa05e8335509633f836cdd06dd17f0743300/primp-0.15.0.tar.gz", hash = "sha256:1af8ea4b15f57571ff7fc5e282a82c5eb69bc695e19b8ddeeda324397965b30a", size = 113022, upload-time = "2025-04-17T11:41:05.315Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f5/5a/146ac964b99ea7657ad67eb66f770be6577dfe9200cb28f9a95baffd6c3f/primp-0.15.0-cp38-abi3-macosx_10_12_x86_64.whl", hash = "sha256:1b281f4ca41a0c6612d4c6e68b96e28acfe786d226a427cd944baa8d7acd644f", size = 3178914, upload-time = "2025-04-17T11:40:59.558Z" },
+    { url = "https://files.pythonhosted.org/packages/bc/8a/cc2321e32db3ce64d6e32950d5bcbea01861db97bfb20b5394affc45b387/primp-0.15.0-cp38-abi3-macosx_11_0_arm64.whl", hash = "sha256:489cbab55cd793ceb8f90bb7423c6ea64ebb53208ffcf7a044138e3c66d77299", size = 2955079, upload-time = "2025-04-17T11:40:57.398Z" },
+    { url = "https://files.pythonhosted.org/packages/c3/7b/cbd5d999a07ff2a21465975d4eb477ae6f69765e8fe8c9087dab250180d8/primp-0.15.0-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c18b45c23f94016215f62d2334552224236217aaeb716871ce0e4dcfa08eb161", size = 3281018, upload-time = "2025-04-17T11:40:55.308Z" },
+    { url = "https://files.pythonhosted.org/packages/1b/6e/a6221c612e61303aec2bcac3f0a02e8b67aee8c0db7bdc174aeb8010f975/primp-0.15.0-cp38-abi3-manylinux_2_34_aarch64.whl", hash = "sha256:e985a9cba2e3f96a323722e5440aa9eccaac3178e74b884778e926b5249df080", size = 3255229, upload-time = "2025-04-17T11:40:47.811Z" },
+    { url = "https://files.pythonhosted.org/packages/3b/54/bfeef5aca613dc660a69d0760a26c6b8747d8fdb5a7f20cb2cee53c9862f/primp-0.15.0-cp38-abi3-manylinux_2_34_armv7l.whl", hash = "sha256:6b84a6ffa083e34668ff0037221d399c24d939b5629cd38223af860de9e17a83", size = 3014522, upload-time = "2025-04-17T11:40:50.191Z" },
+    { url = "https://files.pythonhosted.org/packages/ac/96/84078e09f16a1dad208f2fe0f8a81be2cf36e024675b0f9eec0c2f6e2182/primp-0.15.0-cp38-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:592f6079646bdf5abbbfc3b0a28dac8de943f8907a250ce09398cda5eaebd260", size = 3418567, upload-time = "2025-04-17T11:41:01.595Z" },
+    { url = "https://files.pythonhosted.org/packages/6c/80/8a7a9587d3eb85be3d0b64319f2f690c90eb7953e3f73a9ddd9e46c8dc42/primp-0.15.0-cp38-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:5a728e5a05f37db6189eb413d22c78bd143fa59dd6a8a26dacd43332b3971fe8", size = 3606279, upload-time = "2025-04-17T11:41:03.61Z" },
+    { url = "https://files.pythonhosted.org/packages/0c/dd/f0183ed0145e58cf9d286c1b2c14f63ccee987a4ff79ac85acc31b5d86bd/primp-0.15.0-cp38-abi3-win_amd64.whl", hash = "sha256:aeb6bd20b06dfc92cfe4436939c18de88a58c640752cf7f30d9e4ae893cdec32", size = 3149967, upload-time = "2025-04-17T11:41:07.067Z" },
 ]
 
 [[package]]
