@@ -8,6 +8,7 @@ dependencies = [
     "llama-index>=0.12.37",
     "llama-index-llms-ollama>=0.6.1",
     "llama-index-tools-duckduckgo>=0.3.0",
+    "llama-index-tools-mcp>=0.2.5",
     "llama-index-tools-yahoo-finance>=0.3.0",
     "llama-index-utils-workflow>=0.3.2",
 ]
