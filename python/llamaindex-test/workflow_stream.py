@@ -7,7 +7,6 @@ from llama_index.core.workflow import (
     Event,
     Context,
 )
-from llama_index.utils.workflow import draw_all_possible_flows
 
 
 class FirstEvent(Event):
@@ -18,8 +17,10 @@ class SecondEvent(Event):
     second_output: str
     response: str
 
+
 class ProgressEvent(Event):
     msg: str
+
 
 class MyWorkflow(Workflow):
     @step
