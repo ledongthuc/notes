@@ -1,0 +1,10 @@
+[project]
+name = "test-with-llamaindex-fastapi2"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.116.1",
+    "uvicorn[standard]>=0.27.0",
+]
