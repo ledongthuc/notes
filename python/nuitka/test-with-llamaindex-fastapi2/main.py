@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 import uvicorn
+from llama_index.core.agent.workflow import FunctionAgent
+from llama_index.llms.openai import OpenAI
 
 # Create FastAPI app instance
 app = FastAPI(
@@ -7,6 +9,12 @@ app = FastAPI(
     description="A simple FastAPI application example",
     version="1.0.0"
 )
+
+agent = FunctionAgent(
+    llm=OpenAI(model="gpt-4o-mini"),
+    system_prompt="""You are personal trainer to help build workout flow.""",
+)
+
 
 @app.get("/")
 async def root():
@@ -16,7 +24,14 @@ async def root():
 @app.get("/items/{item_id}")
 async def read_item(item_id: int, q: str | None = None):
     """Get item by ID with optional query parameter"""
-    return {"item_id": item_id, "q": q}
+    return {"item_id": item_id, "q": q}\
+
+@app.get("/demo-llm-index")
+async def chat():
+    """Chat endpoint"""
+    response = await agent.run("How many workout day should I do a week for grain muscle?")
+    print(response)
+    return {"message": response}
 
 @app.post("/items/")
 async def create_item(name: str, price: float):

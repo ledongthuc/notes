@@ -15,7 +15,7 @@ docker build -t fastapi-nuitka-app .
 To run the Docker image, use the following command:
 
 ```sh
-docker run -p 8000:8000 fastapi-nuitka-app
+docker run -p 8000:8000 -e OPENAI_API_KEY=$OPENAI_API_KEY fastapi-nuitka-app
 ```
 
 This will start the FastAPI application and expose it on port 8000.
@@ -24,3 +24,4 @@ If you need further tweaks (e.g., static files, environment variables, or additi
 ```
 
 </rewritten_file>
+

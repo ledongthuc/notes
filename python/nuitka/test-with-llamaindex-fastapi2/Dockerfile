@@ -12,8 +12,11 @@ RUN apt-get update && \
 COPY main.py ./
 COPY pyproject.toml ./
 
+# Install project dependencies
+RUN pip install -e .
+
 # Compile the FastAPI app with Nuitka
-RUN nuitka --standalone --onefile --include-package=main --include-package=fastapi --include-package=uvicorn --output-dir=dist main.py
+RUN nuitka --standalone --onefile --include-package=main --include-package=llama_index --include-package=fastapi --include-package=uvicorn --output-dir=dist main.py
 
 # --- Runtime stage ---
 FROM python:3.11-slim AS runtime
