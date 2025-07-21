@@ -1,0 +1,17 @@
+Metadata-Version: 2.4
+Name: test-with-llamaindex-fastapi
+Version: 0.1.0
+Summary: Add your description here
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi>=0.116.1
+Requires-Dist: llama-index>=0.12.48
+Requires-Dist: uvicorn>=0.35.0
+
+uvicorn main:app --port 8106
+
+# Build Docker image
+docker build -t test-with-llamaindex-fastapi:latest .
+
+# Run Docker container
+docker run -p 8106:8106 -e OPENAI_API_KEY=$OPENAI_API_KEY test-with-llamaindex-fastapi
