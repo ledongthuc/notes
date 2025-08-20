@@ -1,0 +1,10 @@
+[project]
+name = "newspaper-test"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "lxml-html-clean>=0.4.2",
+    "newspaper3k>=0.2.8",
+]
