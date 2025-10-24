@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Capture</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        
+        #videoContainer {
+            position: relative;
+            max-width: 100vw;
+            max-height: 100vh;
+        }
+        
+        #video {
+            width: 100%;
+            height: auto;
+            max-width: 100vw;
+            max-height: 100vh;
+            object-fit: cover;
+        }
+        
+        #error {
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        #loading {
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="videoContainer">
+        <video id="video" autoplay muted playsinline></video>
+        <div id="loading" style="display: none;">Loading camera...</div>
+        <div id="error" style="display: none;"></div>
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+
+        async function startCamera() {
+            try {
+                loading.style.display = 'block';
+                
+                // Request camera access
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 },
+                        facingMode: 'user' // Front camera
+                    },
+                    audio: false
+                });
+                
+                // Set the video source to the camera stream
+                video.srcObject = stream;
+                
+                // Hide loading message
+                loading.style.display = 'none';
+                
+                // Handle video load
+                video.onloadedmetadata = function() {
+                    video.play();
+                };
+                
+            } catch (err) {
+                console.error('Error accessing camera:', err);
+                loading.style.display = 'none';
+                error.style.display = 'block';
+                error.textContent = 'Unable to access camera. Please ensure you have granted camera permissions.';
+            }
+
+            console.log(faceapi.nets)
+        }
+
+        // Start camera when page loads
+        window.addEventListener('load', startCamera);
+    </script>
+</body>
+</html>
