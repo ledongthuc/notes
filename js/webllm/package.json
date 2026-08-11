@@ -1,0 +1,16 @@
+{
+  "name": "webllm-example",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@mlc-ai/web-llm": "^0.2.79"
+  }
+}
