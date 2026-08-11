@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hand Object Color Detection</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #1a1a2e;
+      color: #eee;
+      padding: 20px;
+    }
+    h2 {
+      color: #00d4ff;
+    }
+    canvas {
+      border: 2px solid #00d4ff;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    }
+    #colorBox {
+      width: 60px;
+      height: 40px;
+      border: 2px solid #fff;
+      border-radius: 6px;
+      display: inline-block;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+    #status {
+      color: #ffa500;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+    #status.ready {
+      color: #00ff88;
+    }
+    .info {
+      font-size: 14px;
+      color: #888;
+      margin-top: 10px;
+    }
+    .detection-info {
+      font-size: 12px;
+      color: #00d4ff;
+      margin-top: 5px;
+    }
+    .debug-container {
+      display: inline-flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .debug-box {
+      text-align: center;
+    }
+    .debug-box p {
+      font-size: 11px;
+      color: #666;
+      margin: 5px 0;
+    }
+    .debug-canvas {
+      border: 1px solid #444;
+    }
+  </style>
+</head>
+<body>
+
+<h2>MediaPipe Hands + OpenCV.js</h2>
+<p>Detect color of object only (hand & background excluded)</p>
+
+<div id="status">Loading OpenCV.js...</div>
+
+<video id="video" autoplay playsinline style="display:none;"></video>
+<canvas id="canvas" width="640" height="480"></canvas>
+
+<h3>
+  Detected Color:
+  <span id="colorName">–</span>
+  <span id="colorBox"></span>
+</h3>
+
+<p class="detection-info">
+  Object size: <span id="objectSize">–</span> |
+  Detection: <span id="detectionMode">–</span>
+</p>
+
+<p class="info">Hold an object between your thumb and index finger for best detection</p>
+
+<div class="debug-container">
+  <div class="debug-box">
+    <p>Hand mask (red = hand)</p>
+    <canvas id="debugCanvas1" class="debug-canvas" width="120" height="120"></canvas>
+  </div>
+  <div class="debug-box">
+    <p>Object mask (white = object)</p>
+    <canvas id="debugCanvas2" class="debug-canvas" width="120" height="120"></canvas>
+  </div>
+  <div class="debug-box">
+    <p>Final (object only)</p>
+    <canvas id="debugCanvas3" class="debug-canvas" width="120" height="120"></canvas>
+  </div>
+</div>
+
+<!-- MediaPipe -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
+<!-- OpenCV -->
+<script src="https://docs.opencv.org/4.x/opencv.js"></script>
+
+<script>
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const debugCanvas1 = document.getElementById('debugCanvas1');
+const debugCanvas2 = document.getElementById('debugCanvas2');
+const debugCanvas3 = document.getElementById('debugCanvas3');
+const statusEl = document.getElementById('status');
+
+let cvReady = false;
+let handsReady = false;
+
+// Color smoothing buffer
+const colorBuffer = [];
+const BUFFER_SIZE = 5;
+
+// Hand landmark connections
+const FINGER_INDICES = [
+  [0, 1, 2, 3, 4],
+  [0, 5, 6, 7, 8],
+  [0, 9, 10, 11, 12],
+  [0, 13, 14, 15, 16],
+  [0, 17, 18, 19, 20],
+];
+const PALM_INDICES = [0, 1, 5, 9, 13, 17, 0];
+
+/* ================= OpenCV INIT ================= */
+cv['onRuntimeInitialized'] = () => {
+  console.log('OpenCV.js ready');
+  cvReady = true;
+  updateStatus();
+};
+
+function updateStatus() {
+  if (cvReady && handsReady) {
+    statusEl.textContent = '✓ Ready - Show your hand!';
+    statusEl.className = 'ready';
+  } else if (cvReady) {
+    statusEl.textContent = 'OpenCV ready, initializing hand detection...';
+  } else if (handsReady) {
+    statusEl.textContent = 'Hands ready, loading OpenCV...';
+  }
+}
+
+/* ================= Webcam ================= */
+navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } })
+  .then(stream => {
+    video.srcObject = stream;
+    console.log('Camera started');
+  })
+  .catch(err => {
+    console.error('Camera error:', err);
+    statusEl.textContent = '❌ Camera access denied or unavailable';
+    statusEl.style.color = '#ff4444';
+  });
+
+/* ================= MediaPipe Hands ================= */
+const hands = new Hands({
+  locateFile: (file) =>
+    `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+});
+
+hands.setOptions({
+  maxNumHands: 1,
+  modelComplexity: 1,
+  minDetectionConfidence: 0.7,
+  minTrackingConfidence: 0.7
+});
+
+hands.onResults(onResults);
+
+const camera = new Camera(video, {
+  onFrame: async () => {
+    await hands.send({ image: video });
+  },
+  width: 640,
+  height: 480
+});
+
+camera.start().then(() => {
+  handsReady = true;
+  updateStatus();
+});
+
+/* ================= Main callback ================= */
+function onResults(results) {
+  ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+
+  if (!results.multiHandLandmarks || results.multiHandLandmarks.length === 0) {
+    document.getElementById('colorName').innerText = '–';
+    document.getElementById('objectSize').innerText = '–';
+    document.getElementById('detectionMode').innerText = '–';
+    return;
+  }
+
+  if (!cvReady) return;
+
+  const lm = results.multiHandLandmarks[0];
+  if (!lm || lm.length < 21) return;
+
+  drawHandLandmarks(lm);
+
+  const thumbTip = lm[4];
+  const indexTip = lm[8];
+
+  const centerX = ((thumbTip.x + indexTip.x) / 2) * canvas.width;
+  const centerY = ((thumbTip.y + indexTip.y) / 2) * canvas.height;
+
+  const fingerDist = Math.sqrt(
+    Math.pow((thumbTip.x - indexTip.x) * canvas.width, 2) +
+    Math.pow((thumbTip.y - indexTip.y) * canvas.height, 2)
+  );
+
+  const searchSize = Math.max(100, Math.min(250, fingerDist * 2.5));
+  const searchX = centerX - searchSize / 2;
+  const searchY = centerY - searchSize / 2;
+
+  if (!Number.isFinite(searchX + searchY)) return;
+
+  ctx.setLineDash([5, 5]);
+  ctx.strokeStyle = '#ffff00';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(searchX, searchY, searchSize, searchSize);
+  ctx.setLineDash([]);
+
+  detectObjectAndColor(searchX, searchY, searchSize, searchSize, lm);
+}
+
+/* ================= Draw hand landmarks ================= */
+function drawHandLandmarks(landmarks) {
+  const connections = [
+    [0, 1], [1, 2], [2, 3], [3, 4],
+    [0, 5], [5, 6], [6, 7], [7, 8],
+    [0, 9], [9, 10], [10, 11], [11, 12],
+    [0, 13], [13, 14], [14, 15], [15, 16],
+    [0, 17], [17, 18], [18, 19], [19, 20],
+    [5, 9], [9, 13], [13, 17]
+  ];
+
+  ctx.strokeStyle = '#00d4ff';
+  ctx.lineWidth = 2;
+
+  for (const [i, j] of connections) {
+    const p1 = landmarks[i];
+    const p2 = landmarks[j];
+    ctx.beginPath();
+    ctx.moveTo(p1.x * canvas.width, p1.y * canvas.height);
+    ctx.lineTo(p2.x * canvas.width, p2.y * canvas.height);
+    ctx.stroke();
+  }
+
+  for (let i = 0; i < landmarks.length; i++) {
+    const pt = landmarks[i];
+    ctx.fillStyle = (i === 4 || i === 8) ? '#ff0066' : '#ffffff';
+    ctx.beginPath();
+    ctx.arc(pt.x * canvas.width, pt.y * canvas.height, 4, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+}
+
+/* ================= Create hand mask from landmarks ================= */
+function createHandMask(landmarks, roiX, roiY, roiW, roiH) {
+  let handMask = new cv.Mat(roiH, roiW, cv.CV_8UC1, new cv.Scalar(255));
+
+  const getPoint = (idx) => ({
+    x: landmarks[idx].x * canvas.width - roiX,
+    y: landmarks[idx].y * canvas.height - roiY
+  });
+
+  for (const fingerIndices of FINGER_INDICES) {
+    for (let i = 0; i < fingerIndices.length - 1; i++) {
+      const p1 = getPoint(fingerIndices[i]);
+      const p2 = getPoint(fingerIndices[i + 1]);
+
+      const dx = p2.x - p1.x;
+      const dy = p2.y - p1.y;
+      const len = Math.sqrt(dx * dx + dy * dy);
+
+      if (len > 0) {
+        const nx = -dy / len;
+        const ny = dx / len;
+        const thickness = 18 - i * 3;
+
+        const segmentPoints = new cv.Mat(4, 1, cv.CV_32SC2);
+        segmentPoints.data32S[0] = Math.round(p1.x + nx * thickness);
+        segmentPoints.data32S[1] = Math.round(p1.y + ny * thickness);
+        segmentPoints.data32S[2] = Math.round(p1.x - nx * thickness);
+        segmentPoints.data32S[3] = Math.round(p1.y - ny * thickness);
+        segmentPoints.data32S[4] = Math.round(p2.x - nx * thickness);
+        segmentPoints.data32S[5] = Math.round(p2.y - ny * thickness);
+        segmentPoints.data32S[6] = Math.round(p2.x + nx * thickness);
+        segmentPoints.data32S[7] = Math.round(p2.y + ny * thickness);
+
+        const contours = new cv.MatVector();
+        contours.push_back(segmentPoints);
+        cv.fillPoly(handMask, contours, new cv.Scalar(0));
+        segmentPoints.delete();
+        contours.delete();
+      }
+
+      const radius = 15 - i * 3;
+      cv.circle(handMask, new cv.Point(Math.round(p1.x), Math.round(p1.y)), radius, new cv.Scalar(0), -1);
+    }
+
+    const tip = getPoint(fingerIndices[fingerIndices.length - 1]);
+    cv.circle(handMask, new cv.Point(Math.round(tip.x), Math.round(tip.y)), 10, new cv.Scalar(0), -1);
+  }
+
+  const palmPoints = new cv.Mat(PALM_INDICES.length, 1, cv.CV_32SC2);
+  for (let i = 0; i < PALM_INDICES.length; i++) {
+    const p = getPoint(PALM_INDICES[i]);
+    palmPoints.data32S[i * 2] = Math.round(p.x);
+    palmPoints.data32S[i * 2 + 1] = Math.round(p.y);
+  }
+  const palmContours = new cv.MatVector();
+  palmContours.push_back(palmPoints);
+  cv.fillPoly(handMask, palmContours, new cv.Scalar(0));
+  palmPoints.delete();
+  palmContours.delete();
+
+  const kernel = cv.Mat.ones(9, 9, cv.CV_8U);
+  let invMask = new cv.Mat();
+  cv.bitwise_not(handMask, invMask);
+  cv.dilate(invMask, invMask, kernel);
+  cv.bitwise_not(invMask, handMask);
+  kernel.delete();
+  invMask.delete();
+
+  return handMask;
+}
+
+/* ================= Segment object from background ================= */
+function segmentObject(roi, handMask) {
+  let gray = new cv.Mat();
+  let blurred = new cv.Mat();
+  let edges = new cv.Mat();
+  let dilated = new cv.Mat();
+  let contours = new cv.MatVector();
+  let hierarchy = new cv.Mat();
+  let objectMask = new cv.Mat.zeros(roi.rows, roi.cols, cv.CV_8UC1);
+
+  try {
+    // Convert to grayscale
+    cv.cvtColor(roi, gray, cv.COLOR_RGBA2GRAY);
+
+    // Apply bilateral filter to smooth while preserving edges
+    cv.bilateralFilter(gray, blurred, 9, 75, 75);
+
+    // Canny edge detection
+    cv.Canny(blurred, edges, 30, 80);
+
+    // Apply hand mask to edges (remove hand edges)
+    cv.bitwise_and(edges, handMask, edges);
+
+    // Dilate edges to close gaps
+    const kernel = cv.Mat.ones(5, 5, cv.CV_8U);
+    cv.dilate(edges, dilated, kernel);
+
+    // Close operation to fill gaps
+    cv.morphologyEx(dilated, dilated, cv.MORPH_CLOSE, cv.Mat.ones(7, 7, cv.CV_8U));
+
+    // Find contours
+    cv.findContours(dilated, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+
+    // Find best contour (largest area near center, not touching edges too much)
+    let bestContour = null;
+    let bestScore = 0;
+    const centerX = roi.cols / 2;
+    const centerY = roi.rows / 2;
+
+    for (let i = 0; i < contours.size(); i++) {
+      const contour = contours.get(i);
+      const area = cv.contourArea(contour);
+
+      if (area < 500) continue;
+
+      const rect = cv.boundingRect(contour);
+
+      // Skip if contour touches image borders (likely background)
+      const margin = 5;
+      if (rect.x <= margin || rect.y <= margin ||
+          rect.x + rect.width >= roi.cols - margin ||
+          rect.y + rect.height >= roi.rows - margin) {
+        // Allow if it's large and centered (might be a big object)
+        const contourCenterX = rect.x + rect.width / 2;
+        const contourCenterY = rect.y + rect.height / 2;
+        const distFromCenter = Math.sqrt(
+          Math.pow(contourCenterX - centerX, 2) +
+          Math.pow(contourCenterY - centerY, 2)
+        );
+        if (distFromCenter > Math.min(roi.cols, roi.rows) * 0.3) {
+          continue;
+        }
+      }
+
+      const contourCenterX = rect.x + rect.width / 2;
+      const contourCenterY = rect.y + rect.height / 2;
+
+      const dist = Math.sqrt(
+        Math.pow(contourCenterX - centerX, 2) +
+        Math.pow(contourCenterY - centerY, 2)
+      );
+
+      const maxDist = Math.sqrt(centerX * centerX + centerY * centerY);
+      const distScore = 1 - (dist / maxDist);
+      const areaScore = Math.min(area / 3000, 1);
+
+      // Prefer compact shapes (not too elongated)
+      const aspectRatio = Math.max(rect.width, rect.height) / Math.min(rect.width, rect.height);
+      const shapeScore = aspectRatio < 3 ? 1 : 0.5;
+
+      const score = (areaScore * 0.4) + (distScore * 0.4) + (shapeScore * 0.2);
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestContour = { contour: contour, rect: rect, area: area };
+      }
+    }
+
+    if (bestContour) {
+      // Create filled mask from the best contour
+      const contourVec = new cv.MatVector();
+      contourVec.push_back(bestContour.contour);
+      cv.drawContours(objectMask, contourVec, 0, new cv.Scalar(255), -1);
+      contourVec.delete();
+
+      // Fill holes in the mask
+      const fillKernel = cv.Mat.ones(5, 5, cv.CV_8U);
+      cv.morphologyEx(objectMask, objectMask, cv.MORPH_CLOSE, fillKernel);
+      fillKernel.delete();
+
+      // Also exclude hand from object mask
+      cv.bitwise_and(objectMask, handMask, objectMask);
+    }
+
+    kernel.delete();
+  } catch (e) {
+    console.error('Segmentation error:', e);
+  } finally {
+    gray.delete();
+    blurred.delete();
+    edges.delete();
+    dilated.delete();
+    contours.delete();
+    hierarchy.delete();
+  }
+
+  return objectMask;
+}
+
+/* ================= Object detection with background exclusion ================= */
+function detectObjectAndColor(x, y, w, h, landmarks) {
+  if (!cvReady) return;
+  if (!Number.isFinite(x + y + w + h)) return;
+
+  x = Math.max(0, Math.floor(x));
+  y = Math.max(0, Math.floor(y));
+  w = Math.floor(w);
+  h = Math.floor(h);
+
+  if (w <= 0 || h <= 0) return;
+
+  let src = null;
+  let roi = null;
+  let handMask = null;
+  let objectMask = null;
+  let finalMask = null;
+  let maskedRoi = null;
+  let maskedRgb = null;
+  let finalHsv = null;
+
+  try {
+    src = cv.imread(canvas);
+
+    w = Math.min(w, src.cols - x);
+    h = Math.min(h, src.rows - y);
+
+    if (w <= 0 || h <= 0) {
+      src.delete();
+      return;
+    }
+
+    roi = src.roi(new cv.Rect(x, y, w, h));
+
+    // Create hand mask (255 = not hand, 0 = hand)
+    handMask = createHandMask(landmarks, x, y, w, h);
+
+    // Segment object from background (255 = object, 0 = background/hand)
+    objectMask = segmentObject(roi, handMask);
+
+    // Final mask: object pixels only (excluding hand and background)
+    finalMask = objectMask.clone();
+
+    // Show debug views
+    showDebugViews(roi, handMask, objectMask, finalMask);
+
+    // Check if we found an object
+    const objectPixels = cv.countNonZero(finalMask);
+    const totalPixels = finalMask.rows * finalMask.cols;
+
+    let detectionMode;
+    let finalRect = null;
+
+    if (objectPixels > 200) {
+      detectionMode = 'Object segmented';
+
+      // Find bounding rect of object
+      let contours = new cv.MatVector();
+      let hierarchy = new cv.Mat();
+      cv.findContours(finalMask.clone(), contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+
+      if (contours.size() > 0) {
+        let maxArea = 0;
+        let maxIdx = 0;
+        for (let i = 0; i < contours.size(); i++) {
+          const area = cv.contourArea(contours.get(i));
+          if (area > maxArea) {
+            maxArea = area;
+            maxIdx = i;
+          }
+        }
+        finalRect = cv.boundingRect(contours.get(maxIdx));
+
+        // Draw on main canvas
+        ctx.strokeStyle = '#00ff88';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(x + finalRect.x, y + finalRect.y, finalRect.width, finalRect.height);
+
+        // Draw contour
+        ctx.strokeStyle = '#ff00ff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        const points = contours.get(maxIdx);
+        for (let j = 0; j < points.rows; j++) {
+          const px = x + points.data32S[j * 2];
+          const py = y + points.data32S[j * 2 + 1];
+          if (j === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.stroke();
+      }
+
+      contours.delete();
+      hierarchy.delete();
+
+    } else {
+      detectionMode = 'No object found';
+      finalRect = { x: 0, y: 0, width: w, height: h };
+    }
+
+    document.getElementById('objectSize').innerText =
+      finalRect ? `${Math.round(finalRect.width)}×${Math.round(finalRect.height)}px` : '–';
+    document.getElementById('detectionMode').innerText = detectionMode;
+
+    // Calculate color from object pixels only
+    if (objectPixels > 100) {
+      maskedRoi = new cv.Mat();
+      roi.copyTo(maskedRoi, finalMask);
+
+      maskedRgb = new cv.Mat();
+      finalHsv = new cv.Mat();
+      cv.cvtColor(maskedRoi, maskedRgb, cv.COLOR_RGBA2RGB);
+      cv.cvtColor(maskedRgb, finalHsv, cv.COLOR_RGB2HSV);
+
+      const meanHSV = cv.mean(finalHsv, finalMask);
+      const h_val = meanHSV[0];
+      const s_val = meanHSV[1];
+      const v_val = meanHSV[2];
+
+      colorBuffer.push({ h: h_val, s: s_val, v: v_val });
+      if (colorBuffer.length > BUFFER_SIZE) colorBuffer.shift();
+
+      const smoothedH = colorBuffer.reduce((sum, c) => sum + c.h, 0) / colorBuffer.length;
+      const smoothedS = colorBuffer.reduce((sum, c) => sum + c.s, 0) / colorBuffer.length;
+      const smoothedV = colorBuffer.reduce((sum, c) => sum + c.v, 0) / colorBuffer.length;
+
+      const colorName = classifyColor(smoothedH, smoothedS, smoothedV);
+      document.getElementById('colorName').innerText = colorName;
+
+      const meanRGB = cv.mean(maskedRoi, finalMask);
+      document.getElementById('colorBox').style.background =
+        `rgb(${Math.round(meanRGB[0])},${Math.round(meanRGB[1])},${Math.round(meanRGB[2])})`;
+    } else {
+      document.getElementById('colorName').innerText = 'No object';
+      document.getElementById('colorBox').style.background = '#333';
+    }
+
+  } catch (err) {
+    console.error('Detection error:', err);
+  } finally {
+    if (src) src.delete();
+    if (roi) roi.delete();
+    if (handMask) handMask.delete();
+    if (objectMask) objectMask.delete();
+    if (finalMask) finalMask.delete();
+    if (maskedRoi) maskedRoi.delete();
+    if (maskedRgb) maskedRgb.delete();
+    if (finalHsv) finalHsv.delete();
+  }
+}
+
+/* ================= Debug views ================= */
+function showDebugViews(roi, handMask, objectMask, finalMask) {
+  try {
+    // Debug 1: Hand mask (red tint on hand)
+    let debug1 = roi.clone();
+    for (let i = 0; i < roi.rows; i++) {
+      for (let j = 0; j < roi.cols; j++) {
+        if (handMask.ucharAt(i, j) === 0) {
+          const ptr = debug1.ucharPtr(i, j);
+          ptr[0] = Math.min(255, ptr[0] + 100);
+          ptr[1] = Math.max(0, ptr[1] - 50);
+          ptr[2] = Math.max(0, ptr[2] - 50);
+        }
+      }
+    }
+    let resized1 = new cv.Mat();
+    cv.resize(debug1, resized1, new cv.Size(120, 120));
+    cv.imshow(debugCanvas1, resized1);
+    debug1.delete();
+    resized1.delete();
+
+    // Debug 2: Object mask (white = object)
+    let debug2 = new cv.Mat();
+    cv.cvtColor(objectMask, debug2, cv.COLOR_GRAY2RGBA);
+    let resized2 = new cv.Mat();
+    cv.resize(debug2, resized2, new cv.Size(120, 120));
+    cv.imshow(debugCanvas2, resized2);
+    debug2.delete();
+    resized2.delete();
+
+    // Debug 3: Final result (only object pixels)
+    let debug3 = new cv.Mat.zeros(roi.rows, roi.cols, cv.CV_8UC4);
+    roi.copyTo(debug3, finalMask);
+    let resized3 = new cv.Mat();
+    cv.resize(debug3, resized3, new cv.Size(120, 120));
+    cv.imshow(debugCanvas3, resized3);
+    debug3.delete();
+    resized3.delete();
+
+  } catch (e) {
+    // Ignore debug errors
+  }
+}
+
+/* ================= HSV classifier ================= */
+function classifyColor(h, s, v) {
+  if (v < 40) return 'Black';
+
+  if (s < 30) {
+    if (v > 200) return 'White';
+    if (v > 100) return 'Light Gray';
+    return 'Gray';
+  }
+
+  if (s < 60 && v > 180) return 'White/Pale';
+
+  if (h < 8 || h > 165) return 'Red';
+  if (h < 22) return 'Orange';
+  if (h < 35) return 'Yellow';
+  if (h < 50) return 'Yellow-Green';
+  if (h < 80) return 'Green';
+  if (h < 100) return 'Cyan';
+  if (h < 130) return 'Blue';
+  if (h < 145) return 'Purple';
+  if (h <= 165) return 'Pink/Magenta';
+
+  return 'Unknown';
+}
+</script>
+
+</body>
+</html>

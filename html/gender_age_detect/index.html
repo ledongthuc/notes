@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>On-device Age/Gender (TF.js + face-api.js)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- TensorFlow.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.12.0/dist/tf.min.js"></script>
+  <!-- face-api.js (built on tfjs) -->
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+  <style>
+    :root { --bg:#0b0c10; --fg:#e8eef2; --muted:#9aa3a7; --accent:#6ee7b7; }
+    body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:var(--bg); color:var(--fg); }
+    .wrap { max-width: 960px; margin: 24px auto; padding: 0 16px; }
+    .row { display:grid; grid-template-columns: 1fr 1fr; gap:16px; }
+    .card { background: #111417; border:1px solid #1f2327; border-radius:16px; padding:16px; }
+    video, canvas { width:100%; height:auto; border-radius:12px; display:block; background:#000; }
+    .controls label { display:block; font-size:12px; color:var(--muted); margin-top:8px; }
+    .pill { display:inline-block; padding:2px 8px; border-radius:999px; background:#12181d; border:1px solid #1f2327; font-size:12px; color:var(--muted)}
+    button { background:#16a34a; color:white; border:none; border-radius:12px; padding:8px 12px; cursor:pointer; }
+    button.stop { background:#dc2626; }
+    .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap:8px; }
+    .muted { color: var(--muted); font-size:12px; }
+    .ok { color: var(--accent); }
+    @media (max-width: 840px) { .row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>On-device Age/Gender</h1>
+    <p class="muted">Runs entirely in your browser with TensorFlow.js. No uploads.</p>
+
+    <div class="row">
+      <div class="card">
+        <div style="position:relative">
+          <video id="video" autoplay muted playsinline></video>
+          <canvas id="overlay" style="position:absolute;left:0;top:0;"></canvas>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:12px">
+          <button id="toggle">Start</button>
+          <span class="pill" id="status">idle</span>
+          <span class="pill" id="backend">backend: ?</span>
+          <span class="pill" id="fps">fps: 0</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0">Controls</h3>
+        <div class="grid2 controls">
+          <div>
+            <label>Detector input size</label>
+            <select id="inputSize">
+              <option>256</option>
+              <option selected>320</option>
+              <option>416</option>
+              <option>512</option>
+            </select>
+          </div>
+          <div>
+            <label>Target FPS</label>
+            <select id="targetFps">
+              <option>5</option>
+              <option selected>10</option>
+              <option>15</option>
+              <option>30</option>
+            </select>
+          </div>
+          <div>
+            <label>Min confidence (0–1)</label>
+            <input id="minConf" type="number" step="0.05" min="0" max="1" value="0.5" />
+          </div>
+          <div>
+            <label>Age bucket size (years)</label>
+            <input id="bucket" type="number" min="1" max="20" value="5" />
+          </div>
+        </div>
+
+        <h3>Notes</h3>
+        <ul class="muted">
+          <li>Predictions are estimates and may be inaccurate.</li>
+          <li>For best performance, use Chrome/Edge on a modern device.</li>
+          <li>All compute stays locally; models load from <code>/models</code>.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+<script>
+(async function main(){
+  // Add comprehensive debugging
+  console.log('=== DEBUGGING INFO ===');
+  console.log('TensorFlow.js version:', tf.version);
+  console.log('face-api.js available:', typeof faceapi !== 'undefined');
+  console.log('faceapi.nets available:', typeof faceapi.nets !== 'undefined');
+  
+  // Test basic TensorFlow.js functionality
+  try {
+    console.log('Testing TensorFlow.js basic functionality...');
+    const testTensor = tf.tensor2d([[1, 2], [3, 4]]);
+    console.log('TensorFlow.js test tensor created:', testTensor.shape);
+    testTensor.dispose();
+    console.log('TensorFlow.js basic test: PASSED');
+  } catch (error) {
+    console.error('TensorFlow.js basic test: FAILED', error);
+  }
+  
+  // Test face-api.js basic functionality
+  try {
+    console.log('Testing face-api.js basic functionality...');
+    console.log('faceapi.detectAllFaces type:', typeof faceapi.detectAllFaces);
+    console.log('faceapi.TinyFaceDetectorOptions type:', typeof faceapi.TinyFaceDetectorOptions);
+    console.log('face-api.js basic test: PASSED');
+  } catch (error) {
+    console.error('face-api.js basic test: FAILED', error);
+  }
+  
+  // Elements
+  const video = document.getElementById('video');
+  const overlay = document.getElementById('overlay');
+  const ctx = overlay.getContext('2d');
+  const $toggle = document.getElementById('toggle');
+  const $status = document.getElementById('status');
+  const $backend = document.getElementById('backend');
+  const $fps = document.getElementById('fps');
+  const $inputSize = document.getElementById('inputSize');
+  const $targetFps = document.getElementById('targetFps');
+  const $minConf = document.getElementById('minConf');
+  const $bucket = document.getElementById('bucket');
+
+  // === 0) Choose TF.js backend dynamically ===
+  // Try WebGPU -> WebGL -> WASM
+  async function pickBackend() {
+    if ('gpu' in navigator) {
+      try { await tf.setBackend('webgpu'); await tf.ready(); return 'webgpu'; } catch(e){}
+    }
+    try { await tf.setBackend('webgl'); await tf.ready(); return 'webgl'; } catch(e){}
+    try {
+      // WASM with SIMD/threads if crossOriginIsolated (optional)
+      await tf.setBackend('wasm');
+      await tf.ready();
+      return 'wasm';
+    } catch(e){}
+    return tf.getBackend(); // whatever is left
+  }
+
+  $status.textContent = 'loading models...';
+  const backend = await pickBackend();
+  $backend.textContent = `backend: ${backend}`;
+  console.log('TFJS backend:', backend);
+
+  // === 1) Load models (served from /models) ===
+  // You will place the model files into ./models (Step 4 below).
+  const modelBaseURL = './models';
+  try {
+    console.log('Loading models from:', modelBaseURL);
+    await Promise.all([
+      faceapi.nets.tinyFaceDetector.loadFromUri(modelBaseURL),
+      faceapi.nets.ageGenderNet.loadFromUri(modelBaseURL)
+    ]);
+    console.log('Models loaded successfully');
+    $status.textContent = 'models ready';
+  } catch (error) {
+    console.error('Error loading models:', error);
+    $status.textContent = 'model load failed';
+    throw error;
+  }
+
+  // === 2) Start camera ===
+  async function startCamera(){
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+      audio: false
+    });
+    video.srcObject = stream;
+    await new Promise(res => video.onloadedmetadata = res);
+    video.play();
+    resizeCanvases();
+  }
+
+  function resizeCanvases(){
+    overlay.width = video.videoWidth || 640;
+    overlay.height = video.videoHeight || 480;
+  }
+
+  window.addEventListener('resize', resizeCanvases);
+
+  // === 3) Detection loop ===
+  let running = false;
+  let rafId = null;
+  let lastT = performance.now();
+  let frameBudgetMs = 1000 / Number($targetFps.value);
+
+  $toggle.addEventListener('click', async () => {
+    if (!running) {
+      $toggle.textContent = 'Stop';
+      $toggle.classList.add('stop');
+      $status.textContent = 'starting camera...';
+      if (!video.srcObject) await startCamera();
+      $status.textContent = 'running';
+      running = true;
+      frameBudgetMs = 1000 / Number($targetFps.value);
+      loop();
+    } else {
+      running = false;
+      $toggle.textContent = 'Start';
+      $toggle.classList.remove('stop');
+      $status.textContent = 'stopped';
+      if (rafId) cancelAnimationFrame(rafId);
+    }
+  });
+
+  $targetFps.addEventListener('change', () => {
+    frameBudgetMs = 1000 / Number($targetFps.value);
+  });
+
+  function bucketAge(age, bucketSize){
+    const low = Math.max(0, Math.floor(age / bucketSize) * bucketSize);
+    const high = low + Number(bucketSize);
+    return `${low}–${high}`;
+  }
+
+  async function loop(){
+    const now = performance.now();
+    const elapsed = now - lastT;
+    if (elapsed >= frameBudgetMs) {
+      lastT = now;
+      await tick();
+      // FPS display (EMA-ish)
+      const fps = Math.round(1000 / Math.max(1, performance.now() - now));
+      $fps.textContent = `fps: ${fps}`;
+    }
+    if (running) rafId = requestAnimationFrame(loop);
+  }
+
+  async function tick(){
+    if (video.readyState < 2) return;
+
+    try {
+      console.log('=== DETECTION DEBUG ===');
+      console.log('Video ready state:', video.readyState);
+      console.log('Video dimensions:', video.videoWidth, 'x', video.videoHeight);
+      
+      // Clear and match canvas to video
+      if (overlay.width !== video.videoWidth) resizeCanvases();
+      ctx.clearRect(0, 0, overlay.width, overlay.height);
+
+      const minConfidence = Number($minConf.value);
+      const inputSize = Number($inputSize.value);
+      
+      console.log('Detection params:', { minConfidence, inputSize });
+      console.log('faceapi.detectAllFaces available:', typeof faceapi.detectAllFaces);
+      console.log('faceapi.TinyFaceDetectorOptions available:', typeof faceapi.TinyFaceDetectorOptions);
+
+      // Detect faces with TinyFaceDetector
+      console.log('Starting face detection...');
+      
+      let detections;
+      try {
+        // Try the main detection method
+        detections = await faceapi.detectAllFaces(
+          video,
+          new faceapi.TinyFaceDetectorOptions({ inputSize, scoreThreshold: minConfidence })
+        ).withAgeAndGender();
+        console.log('Main detection method succeeded');
+      } catch (error) {
+        console.log('Main detection failed, trying fallback method...');
+        console.error('Fallback error:', error);
+        
+        // Fallback: try without age/gender first
+        try {
+          const faceDetections = await faceapi.detectAllFaces(
+            video,
+            new faceapi.TinyFaceDetectorOptions({ inputSize, scoreThreshold: minConfidence })
+          );
+          console.log('Face detection succeeded, trying age/gender...');
+          
+          // Try to add age/gender separately
+          detections = await faceapi.detectAllFaces(
+            video,
+            new faceapi.TinyFaceDetectorOptions({ inputSize, scoreThreshold: minConfidence })
+          ).withAgeAndGender();
+        } catch (fallbackError) {
+          console.error('Fallback also failed:', fallbackError);
+          throw fallbackError;
+        }
+      }
+      
+      console.log('Detection completed, found', detections.length, 'faces');
+
+      // Draw results
+      detections.forEach((det, index) => {
+        console.log(`Face ${index}:`, {
+          box: det.detection.box,
+          age: det.age,
+          gender: det.gender,
+          genderProbability: det.genderProbability
+        });
+        
+        const { x, y, width, height } = det.detection.box;
+
+        // Box
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#6ee7b7';
+        ctx.strokeRect(x, y, width, height);
+
+        // Label
+        const age = det.age; // float
+        const ageBucket = bucketAge(Math.round(age), Number($bucket.value));
+        const gender = det.gender; // 'male' | 'female'
+        const conf = Math.round((det.genderProbability || det.detection.score || 0) * 100);
+
+        const label = `${gender} (${conf}%) • age ${ageBucket}`;
+        ctx.font = '14px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif';
+        ctx.fillStyle = 'rgba(0,0,0,0.6)';
+        const tw = ctx.measureText(label).width + 10;
+        const th = 20;
+        ctx.fillRect(x, Math.max(0, y - th - 4), tw, th);
+        ctx.fillStyle = '#e8eef2';
+        ctx.fillText(label, x + 5, Math.max(12, y - 6));
+      });
+    } catch (error) {
+      console.error('=== DETECTION ERROR ===');
+      console.error('Error type:', error.constructor.name);
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+      console.error('Full error object:', error);
+      $status.textContent = 'detection error: ' + error.message;
+    }
+  }
+
+})();
+</script>
+</body>
+</html>
