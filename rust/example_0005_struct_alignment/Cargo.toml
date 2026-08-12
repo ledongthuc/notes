@@ -1,0 +1,6 @@
+[package]
+name = "example_0005_struct_alignment"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
