@@ -1,0 +1,8 @@
+[package]
+name = "example_0006_async_communication_model"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rand = "0.10.2"
+tokio = { version = "1.53.1", features = ["full"] }
